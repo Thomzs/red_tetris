@@ -21,7 +21,7 @@ io.on("connection", (socket) => {
     clients.push(socket);
 
     socket.on("updatedCounter", (data) => {
-       io.emit("updateCounter", data.counter);
+        socket.broadcast.emit("updateCounter", data.counter);
     });
 
     socket.on("disconnect", () => {

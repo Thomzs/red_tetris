@@ -21,10 +21,10 @@ export const socketMiddleware = (store) => {
                 socket = io("http://localhost:3001");
             }
             socket.on("connect", () => {
-                setConnected();
+                store.dispatch(setConnected());
             });
             socket.on("updateCounter", (data) => {
-               setCounter(data);
+               store.dispatch(setCounter(data));
             });
         }
         if (connected) {

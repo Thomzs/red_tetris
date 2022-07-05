@@ -13,7 +13,7 @@ function App() {
   const dispatch = useDispatch();
 
   const {
-      connection: { connected: connected },
+      connection: { connected },
   } = useSelector((state) => state);
 
   useEffect(() => {
