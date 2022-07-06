@@ -1,12 +1,20 @@
 import './App.css';
 import {useSelector, useDispatch} from 'react-redux';
-import { useEffect } from "react";
+import {useEffect, useState} from "react";
 import {startConnecting} from "./slices/connectionSlice";
-import './assets/styles/app.scss';
+import Intro from "./views/intro";
+import Home from "./views/home";
 
+function WhatToRender(props) {
+    const status = props.status;
+
+    if (status === 'INTRO') return <Intro />;
+    else if (status === 'HOME') return <Home />;
+}
 
 function App() {
-  const { player }  = useSelector((state) => state);
+  const { status : {_status} }  = useSelector((state) => state);
+
   const dispatch = useDispatch();
 
   const {
@@ -19,22 +27,7 @@ function App() {
     }, []);
 
   return (
-      <section className="container">
-          <div className="animated-title">
-              <div className="text-top">
-                  <div>
-                      <span className="topSpan">Good evening,</span>
-                      <span className="topSpan2">
-                            <span><img src={player._avatar}
-                                       alt="Avatar" className="avatar"/></span> {player._username}
-                        </span>
-                  </div>
-              </div>
-              <div className="text-bottom">
-                  <div><span className="tetris">Red</span>Tetris.</div>
-              </div>
-          </div>
-      </section>
+      <WhatToRender status={_status} />
   );
 }
 
