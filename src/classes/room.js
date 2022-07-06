@@ -1,0 +1,6 @@
+class Room {
+    constructor() {
+    }
+
+    get
+}

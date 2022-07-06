@@ -6,6 +6,7 @@ const {Server} = require("socket.io");
 const server = http.createServer(app);
 
 let clients = [];
+let rooms = [];
 
 const io = new Server(server, {
     cors: {

@@ -1,12 +1,12 @@
 import {configureStore} from '@reduxjs/toolkit';
 import thunk from "redux-thunk";
 import { socketMiddleware } from "../middleware/socket";
-import counterReducer from '../slices/counterSlice'
+import playerReducer from '../slices/playerSlice'
 import connectionReducer from "../slices/connectionSlice";
 
 const store = configureStore({
     reducer: {
-        counter: counterReducer,
+        player: playerReducer,
         connection: connectionReducer
     },
     middleware: (getDefaultMiddleware) =>
