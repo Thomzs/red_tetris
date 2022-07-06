@@ -74,6 +74,21 @@
   color: #E62B2B;
 }
 
+@keyframes opacityFadeOut {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+.container {
+  animation: opacityFadeOut 1s;
+  animation-delay: 4s;
+}
+
 .navBar {
   list-style-type: none;
   margin: 0;

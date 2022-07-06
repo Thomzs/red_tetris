@@ -13,7 +13,7 @@ function WhatToRender(props) {
 }
 
 function App() {
-  const { status : {_status} }  = useSelector((state) => state);
+  const { status : {_status} } = useSelector((state) => state);
 
   const dispatch = useDispatch();
 
