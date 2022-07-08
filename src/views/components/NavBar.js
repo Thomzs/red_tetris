@@ -27,7 +27,7 @@ const NavBar = () => {
 
     //TODO Change game status from GAME to HOME
     return (
-        <Navbar bg="light" expand="lg">
+        <Navbar bg="light nav-style" expand="lg">
             <Container fluid>
                 <Navbar.Brand className="regularText"><span className="tetris">Red</span>Tetris.</Navbar.Brand>
                 <Navbar.Toggle aria-controls="navbarScroll" />
