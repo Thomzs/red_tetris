@@ -6,6 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {Button, Container, Form, FormControl, Nav, Navbar, NavDropdown} from "react-bootstrap";
 import {setUsername} from "../../slices/playerSlice";
 import {debounce} from "../../utils/debounce";
+import {setStatusHome} from "../../slices/statusSlice";
 
 const NavBar = () => {
     const { player, }  = useSelector((state) => state);
@@ -17,6 +18,10 @@ const NavBar = () => {
 
         dispatch(setUsername(username));
     };
+
+    const backHome = () => {
+        dispatch(setStatusHome());
+    }
 
      const inputHandler = debounce((e) => updatePlayer(e), 250);
 
@@ -44,7 +49,12 @@ const NavBar = () => {
                             onChange={inputHandler}
                         />
                     </Form>
-                    <Button variant="danger" style={{ whiteSpace: "nowrap", marginLeft: 50}} disabled={true}>Quit game</Button>
+                    <Button
+                        variant="danger"
+                        style={{ whiteSpace: "nowrap", marginLeft: 50}}
+                        disabled={_status === 'HOME'}
+                        onClick={backHome}
+                    >Quit game</Button>
                 </Navbar.Collapse>
             </Container>
         </Navbar>

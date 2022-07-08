@@ -5,12 +5,14 @@ import {startConnecting} from "./slices/connectionSlice";
 import Intro from "./views/Intro";
 import Home from "./views/Home";
 import NavBar from "./views/components/NavBar";
+import Game from "./views/Game";
 
 function WhatToRender(props) {
     const status = props.status;
 
     if (status === 'INTRO') return <Intro />;
     else if (status === 'HOME') return <><NavBar /><Home /></>;
+    else if (status === 'GAME') return <><NavBar /><Game /></>;
 }
 
 function App() {
