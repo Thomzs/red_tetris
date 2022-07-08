@@ -84,29 +84,7 @@
   }
 }
 
-.container {
+.intro {
   animation: opacityFadeOut 1s;
   animation-delay: 4s;
-}
-
-.navBar {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  position: fixed;
-  top: 0;
-  width: 100%;
-}
-
-.navBarItem {
-  float: left;
-  display: inline;
-}
-
-.navBarItem a {
-  display: block;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
 }

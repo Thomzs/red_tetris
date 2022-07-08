@@ -8,7 +8,7 @@ function bzeroMap() {
     return new Array(rows).fill(0).map(() => new Array(columns).fill(0));
 }
 
-function makeAvatar(username) {
+function makeAvatar(username) { //TODO randomize colors a bit more
     return 'https://source.boringavatars.com/marble/120/' + username + '?colors=264653,2a9d8f,e9c46a,f4a261,e76f51';
 }
 
@@ -35,8 +35,8 @@ const playerSlice = createSlice( {
     },
     reducers: {
         setUsername: (state, action) => {
-            state._username = action.payload.username;
-            state._avatar = makeAvatar(action.payload.username);
+            state._username = action.payload;
+            state._avatar = makeAvatar(action.payload);
         },
         setRole: (state, action) => {
             state._role = action.payload.role;

@@ -2,14 +2,15 @@ import './App.css';
 import {useSelector, useDispatch} from 'react-redux';
 import {useEffect, useState} from "react";
 import {startConnecting} from "./slices/connectionSlice";
-import Intro from "./views/intro";
-import Home from "./views/home";
+import Intro from "./views/Intro";
+import Home from "./views/Home";
+import NavBar from "./views/components/NavBar";
 
 function WhatToRender(props) {
     const status = props.status;
 
     if (status === 'INTRO') return <Intro />;
-    else if (status === 'HOME') return <Home />;
+    else if (status === 'HOME') return <><NavBar /><Home /></>;
 }
 
 function App() {

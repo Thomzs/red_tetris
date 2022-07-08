@@ -13,7 +13,7 @@ const Intro = () => {
     }, []);
 
     return (
-        <section className="container">
+        <section className="intro">
             <div className="animated-title">
                 <div className="text-top">
                     <div>
