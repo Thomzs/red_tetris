@@ -1,5 +1,6 @@
 import { io, Socket } from "socket.io-client";
 import { setConnected, startConnecting } from "../slices/connectionSlice";
+import { setUsername } from "../slices/playerSlice";
 import {
     increment,
     decrement,
@@ -31,6 +32,12 @@ export const socketMiddleware = (store) => {
             if (increment.match(action) || decrement.match(action) || addBy.match(action)) {
                 socket?.emit('updatedCounter', {
                     counter: store.getState().counter,
+                });
+            }
+
+            if (setUsername.match(action) && store.getState().status._status === 'GAME') {
+                socket?.emit('updatedUsername', {
+                    username: action.payload,
                 });
             }
         }

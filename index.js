@@ -26,7 +26,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("disconnect", () => {
-        clients = clients.filter(m => { return m.id !== socket.id});
+        clients = clients.filter(m => { return m.id !== socket.id });
     });
 });
 

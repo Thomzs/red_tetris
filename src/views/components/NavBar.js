@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import '../../assets/styles/nav.scss';
 import {useEffect} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Button, Container, Form, FormControl, Nav, Navbar, NavDropdown} from "react-bootstrap";
+import {Button, Container, Form, FormControl, Nav, Navbar} from "react-bootstrap";
 import {setUsername} from "../../slices/playerSlice";
 import {debounce} from "../../utils/debounce";
 import {setStatusHome} from "../../slices/statusSlice";
