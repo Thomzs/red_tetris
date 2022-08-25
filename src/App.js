@@ -1,11 +1,12 @@
 import './App.css';
-import {useSelector, useDispatch} from 'react-redux';
-import {useEffect, useState} from "react";
-import {startConnecting} from "./slices/connectionSlice";
+import {useSelector} from 'react-redux';
 import Intro from "./views/Intro";
 import Home from "./views/Home";
 import NavBar from "./views/components/NavBar";
 import Game from "./views/Game";
+
+//TODO When the backend server is unreachable or on disconnection, let the user know in a clean way,
+// e.g: status=UNREACHABLE => return <div>It seems we're having some issues right now, pls refresh the page or try again a bit later</div>
 
 function WhatToRender(props) {
     const status = props.status;
@@ -17,17 +18,6 @@ function WhatToRender(props) {
 
 function App() {
   const { status : {_status} } = useSelector((state) => state);
-
-  const dispatch = useDispatch();
-
-  const {
-      connection: { connected },
-  } = useSelector((state) => state);
-
-  useEffect(() => {
-      console.log("CONNECT");
-      dispatch(startConnecting());
-    }, []);
 
   return (
       <WhatToRender status={_status} />

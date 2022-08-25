@@ -7,6 +7,7 @@ import {
     addBy,
     setCounter
 } from "../slices/counterSlice";
+import {setStatusHome, setRooms} from "../slices/statusSlice";
 
 export const socketMiddleware = (store) => {
     let socket = Socket;
@@ -14,7 +15,7 @@ export const socketMiddleware = (store) => {
     return (next) => (action) => {
         next(action); //Sure ?
 
-        const connected = store.getState()?.connection?.connected;
+        const connected = store.getState()?.connection?._connected;
 
         if (startConnecting.match(action)) {
             //TODO connection error and disconnect
@@ -24,21 +25,17 @@ export const socketMiddleware = (store) => {
             socket.on("connect", () => {
                 store.dispatch(setConnected());
             });
-            socket.on("updateCounter", (data) => {
-               store.dispatch(setCounter(data));
-            });
         }
         if (connected) {
-            if (increment.match(action) || decrement.match(action) || addBy.match(action)) {
-                socket?.emit('updatedCounter', {
-                    counter: store.getState().counter,
-                });
-            }
 
             if (setUsername.match(action) && store.getState().status._status === 'GAME') {
                 socket?.emit('updatedUsername', {
                     username: action.payload,
                 });
+            }
+
+            if (setStatusHome.match(action)) {
+                socket?.close();
             }
         }
     };

@@ -2,10 +2,11 @@ import {createSlice} from "@reduxjs/toolkit";
 
 const statusSlice = createSlice({
     name: 'status',
-    initialState: { _status: 'INTRO' },
+    initialState: {
+        _status: 'INTRO',
+    },
     reducers: {
         setStatusHome: (state) => {
-            console.log("updated");
             state._status = 'HOME';
         },
         setStatusGame: (state) => {
@@ -16,7 +17,7 @@ const statusSlice = createSlice({
 
 export const {
     setStatusHome,
-    setStatusGame
+    setStatusGame,
 } = statusSlice.actions;
 
 export default statusSlice.reducer;

@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    connected: false,
-    connecting: false,
+    _connected: false,
+    _connecting: false,
 };
 
 const connectionSlice = createSlice({
@@ -10,10 +10,10 @@ const connectionSlice = createSlice({
     initialState,
     reducers: {
         startConnecting(state) {
-            state.connecting = true;
+            state._connecting = true;
         },
         setConnected(state) {
-            state.connected = true;
+            state._connected = true;
         },
     },
 });
