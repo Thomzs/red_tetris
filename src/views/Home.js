@@ -164,7 +164,7 @@ const Home = () => {
     }, []);
 
     return (
-        <section className="container">
+        <section className="container mb-4">
             <div className="row">
                 <div className="d-flex justify-content-center">
                     <button type="button" onClick={handleShowForm} className="btn btn-outline-dark mt-4 me-2">Create room</button>
