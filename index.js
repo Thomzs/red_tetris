@@ -5,12 +5,15 @@ const cors = require("cors");
 const {Server} = require("socket.io");
 const {Status} = require("./src/utils/status");
 const server = http.createServer(app);
+const { v4: uuidv4 } = require('uuid');
+
+
 
 let clients = [];
 let rooms = [];
 
 //just for dev purposes
-rooms.push({id: '574839', name: 'La room 1', password: 'abcde', private: true, players: [], mode: 'classic', status: Status.InGame}, {id: '574840', name: 'Wesh les bgs', password: '', private: false, players: [], mode: 'classic', status: Status.Lobby});
+rooms.push({id: uuidv4(), name: 'La room 1', password: 'abcde', private: true, players: [], mode: 'classic', status: Status.InGame}, {id: uuidv4(), name: 'Wesh les bgs', password: '', private: false, players: [], mode: 'classic', status: Status.Lobby});
 
 const io = new Server(server, {
     cors: {
@@ -74,6 +77,7 @@ app.get('/createRoom', (req, res) => {
         res.send(JSON.stringify('ROOMNAME-TAKEN'));
     } else {
         rooms.push({
+            id: uuidv4(),
             name: name,
             password: password,
             private: (password !== ''),
