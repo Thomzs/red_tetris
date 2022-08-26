@@ -6,8 +6,9 @@ const {Server} = require("socket.io");
 const {Status} = require("./src/utils/status");
 const server = http.createServer(app);
 const { v4: uuidv4 } = require('uuid');
+const Room = require("./src/classes/Room");
 
-
+const _Room = new Room();
 
 let clients = [];
 let rooms = [];
@@ -28,12 +29,10 @@ io.on("connection", (socket) => {
     console.log("CONNECTION FROM: ", socket.handshake.headers.origin);
     clients.push(socket);
 
-    socket.on("updatedCounter", (data) => {
-        socket.broadcast.emit("updateCounter", data.counter);
-    });
 
     socket.on("disconnect", () => {
         clients = clients.filter(m => { return m.id !== socket.id });
+        //TODO remove client from the room he was in;
     });
 });
 
@@ -42,47 +41,26 @@ server.listen(3001, () => {
 });
 
 app.get('/rooms', (req,res) => {
-    res.send(rooms.map(({password, ...item}) => item));
+    _Room.getRoomListNoPasswords(rooms).then(r => res.send(r));
 })
 
 app.get('/askRoom', (req, res) => {
     let roomId = req.query.room;
     let password = req.query.password;
-    let room = rooms.find(obj => obj.id === roomId);
 
-    if (!room) {
-        res.status(500); //TODO status codes?
-        res.send(JSON.stringify({
-            message: 'This room does not exist.'
-        }));
-    } else if (room.password === password) {
-        res.send(true);
-    } else {
-        res.send(false);
-    }
+    _Room.checkRoomPassword(rooms, roomId, password)
+        .then(r => res.send(r))
+        .catch(() => res.send(JSON.stringify({ message: 'This room does not exist.'})));
 })
 
-app.get('/createRoom', (req, res) => {
+app.get('/createRoom', async (req, res) => {
     let name = req.query.name;
     let password = req.query.password;
     let mode = req.query.mode
 
-    let room = rooms.find(obj => obj.name === name);
-
-    if (room) { //name is already taken
-        res.send(JSON.stringify('ROOMNAME-TAKEN'));
-    } else {
-        rooms.push({
-            id: uuidv4(),
-            name: name,
-            password: password,
-            private: (password !== ''),
-            players: [],
-            mode: mode,
-            status: Status.Lobby,
-        });
-        res.send(JSON.stringify('ROOM-SUCCESS'));
-    }
+    _Room.createRoom(rooms, name, password, mode)
+        .then(() => res.send(JSON.stringify('ROOM-SUCCESS')))
+        .catch(() => res.send(JSON.stringify('ROOMNAME-TAKEN')));
 });
 
 app.listen(8080, () => {

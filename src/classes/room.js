@@ -1,6 +1,0 @@
-class Room {
-    constructor() {
-    }
-
-    get
-}
