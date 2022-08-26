@@ -28,10 +28,6 @@ io.on("connection", (socket) => {
     console.log("CONNECTION FROM: ", socket.handshake.headers.origin);
     clients.push(socket);
 
-    socket.on('statusHome', () => {
-       socket.emit('roomList', rooms.map(({password, ...item}) => item)); //Send rooms but don't send password
-    });
-
     socket.on("updatedCounter", (data) => {
         socket.broadcast.emit("updateCounter", data.counter);
     });
@@ -46,7 +42,7 @@ server.listen(3001, () => {
 });
 
 app.get('/rooms', (req,res) => {
-    res.send(rooms);
+    res.send(rooms.map(({password, ...item}) => item));
 })
 
 app.get('/askRoom', (req, res) => {
