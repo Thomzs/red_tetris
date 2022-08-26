@@ -118,7 +118,7 @@ const Home = () => {
             }
         } else if (ret === 'ROOM-SUCCESS') {
             handleCloseForm();
-            alert('ROOM CREATED');
+            dispatch(setStatusGame()); //TODO it ain't done yet
         } else {
             handleCloseForm();
             alert('Something unexpected happened. Please try again');
@@ -143,7 +143,7 @@ const Home = () => {
         }
         if (ret === true) {
             handleClosePrompt();
-            alert('YOU GO IN THE ROOM');
+            dispatch(setStatusGame()); //TODO it ain't done yet
             //initGameConnection(); //params: room id, password}
         } else {
              if (wrongPassword !== '') {
