@@ -10,6 +10,7 @@ import {startConnecting} from "../slices/connectionSlice";
 import {checkRoomPassword, getRooms, requestCreateRoom} from "../utils/api";
 import {ArrowClockwise} from 'react-bootstrap-icons'
 import {useForm} from "react-hook-form";
+import {Status} from "../utils/status";
 
 //TODO if not connected go connect
 
@@ -38,11 +39,15 @@ function RoomsList(props) {
             key: room.id,
         };
 
+        if (room.status === Status.InGame) {
+            inputPros.style.backgroundColor = '#ed958f'
+        }
+
         if (index + 1 < rooms.length) {  //No bottom border for the last one
             inputPros.className = 'row border-bottom';
         }
 
-        if (room.private) {  //Password prompt for a private room
+        if (room.private && room.status !== Status.InGame) {  //Password prompt for a private room
             inputPros.onClick = () => {
                 clickedRoom = room;
                 props.handle()
@@ -80,7 +85,7 @@ const Home = () => {
     const initGameConnection = () => {};
     const getUpdateRooms = () => {
         getRooms()
-            .then(r => setRooms(r))
+            .then(r => setRooms(r.sort((a, b) => b.status - a.status || b.players.length - a.players.length)))
             .catch(err => console.log(err));
         return false;
     }

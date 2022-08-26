@@ -3,13 +3,14 @@ const app = express();
 const http = require("http");
 const cors = require("cors");
 const {Server} = require("socket.io");
+const {Status} = require("./src/utils/status");
 const server = http.createServer(app);
 
 let clients = [];
 let rooms = [];
 
 //just for dev purposes
-rooms.push({id: '574839', name: 'La room 1', password: 'abcde', private: true, players: [], mode: 'classic'}, {id: '574840', name: 'Wesh les bgs', password: '', private: false, players: [], mode: 'classic'});
+rooms.push({id: '574839', name: 'La room 1', password: 'abcde', private: true, players: [], mode: 'classic', status: Status.InGame}, {id: '574840', name: 'Wesh les bgs', password: '', private: false, players: [], mode: 'classic', status: Status.Lobby});
 
 const io = new Server(server, {
     cors: {
@@ -78,6 +79,7 @@ app.get('/createRoom', (req, res) => {
             private: (password !== ''),
             players: [],
             mode: mode,
+            status: Status.Lobby,
         });
         res.send(JSON.stringify('ROOM-SUCCESS'));
     }
