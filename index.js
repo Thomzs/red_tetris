@@ -59,7 +59,7 @@ app.get('/createRoom', async (req, res) => {
     let mode = req.query.mode
 
     _Room.createRoom(rooms, name, password, mode)
-        .then(() => res.send(JSON.stringify('ROOM-SUCCESS')))
+        .then((r) => res.send(r))
         .catch(() => res.send(JSON.stringify('ROOMNAME-TAKEN')));
 });
 

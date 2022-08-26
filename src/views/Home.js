@@ -116,7 +116,7 @@ const Home = () => {
             } else { //If the password is still wrong, play the animation again
                 setReRenderTrick2(reRenderTrick2 === 1 ? 2 : 1);
             }
-        } else if (ret === 'ROOM-SUCCESS') {
+        } else if (ret.id !== undefined && ret.id !== null) {
             handleCloseForm();
             dispatch(setStatusGame()); //TODO it ain't done yet
         } else {

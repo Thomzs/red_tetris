@@ -14,15 +14,15 @@ class Room {
             if (room) { //name is already taken
                 reject();
             } else {
-                rooms.push({
+                let newRoom = {
                     id: uuidv4(),
                     name: name,
                     password: password,
                     private: (password !== ''),
                     players: [],
-                    mode: mode,
                     status: Status.Lobby,
-                });
+                };
+                rooms.push(newRoom);
                 resolve();
             }
         });
