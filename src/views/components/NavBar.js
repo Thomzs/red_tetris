@@ -38,7 +38,7 @@ const NavBar = () => {
                         navbarScroll
                     >
                     </Nav>
-                    <Form className="d-flex">
+                    <Form className="d-flex" onSubmit={(event => event.preventDefault())}>
                         <img src={player._avatar}
                              className="small-avatar" alt=""/>
                         <FormControl
