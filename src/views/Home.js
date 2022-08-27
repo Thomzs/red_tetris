@@ -1,5 +1,5 @@
 import {useDispatch, useSelector} from "react-redux";
-import {setStatusGame, requestJoinRoom} from "../slices/statusSlice";
+import {setStatusGame} from "../slices/statusSlice";
 
 import Modal from 'react-bootstrap/Modal';
 import {useEffect, useState} from "react";
@@ -52,6 +52,10 @@ function RoomsList(props) {
                 clickedRoom = room;
                 props.handle()
             };
+        } else if (room.status !== Status.InGame) {
+            inputPros.onClick = () => {
+                props.connect(room);
+            }
         }
 
         ret.push(
@@ -71,6 +75,7 @@ const Home = () => {
 
     const initialState = {password: '', roomName: '', mode: 'classical'};
 
+    const { connection: { _connected } } = useSelector((state) => state);
     const [showForm, setShowForm] = useState(false);
     const [showPrompt, setShowPrompt] = useState(false);
     const [wrongPassword, setWrongPassword] = useState("visually-hidden");
@@ -78,11 +83,20 @@ const Home = () => {
     const [reRenderTrick1, setReRenderTrick1] = useState(1);
     const [reRenderTrick2, setReRenderTrick2] = useState(1);
     const [rooms, setRooms] = useState([]);
-    const {register, handleSubmit, reset, formState, formState: { isSubmitSuccessful }} = useForm({
+    const {register, handleSubmit, reset} = useForm({
         defaultValues: initialState
     });
 
-    const initGameConnection = () => {};
+    const initGameConnection = (room) => {
+         dispatch(startConnecting(room));
+    };
+
+    useEffect(() => {
+        if (_connected) {
+            dispatch(setStatusGame());
+        }
+    }, [_connected]);
+
     const getUpdateRooms = () => {
         getRooms()
             .then(r => setRooms(r.sort((a, b) => b.status - a.status || b.players.length - a.players.length)))
@@ -118,7 +132,7 @@ const Home = () => {
             }
         } else if (ret.id !== undefined && ret.id !== null) {
             handleCloseForm();
-            dispatch(setStatusGame()); //TODO it ain't done yet
+            initGameConnection(ret);
         } else {
             handleCloseForm();
             alert('Something unexpected happened. Please try again');
@@ -143,7 +157,7 @@ const Home = () => {
         }
         if (ret === true) {
             handleClosePrompt();
-            dispatch(setStatusGame()); //TODO it ain't done yet
+            initGameConnection(clickedRoom);
             //initGameConnection(); //params: room id, password}
         } else {
              if (wrongPassword !== '') {
@@ -179,7 +193,7 @@ const Home = () => {
                         <div className="col border-end h-100 d-flex align-items-center"><b>Players</b></div>
                         <div className="col h-100 d-flex align-items-center"><b>Access</b></div>
                     </div>
-                    <RoomsList rooms={rooms} handle={handleShowPrompt} />
+                    <RoomsList rooms={rooms} handle={handleShowPrompt} connect={initGameConnection}/>
                 </div>
             </div>
 

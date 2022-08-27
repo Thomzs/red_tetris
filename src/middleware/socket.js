@@ -1,13 +1,7 @@
 import { io, Socket } from "socket.io-client";
-import { setConnected, startConnecting } from "../slices/connectionSlice";
+import {setConnected, setDisconnected, startConnecting} from "../slices/connectionSlice";
 import { setUsername } from "../slices/playerSlice";
-import {
-    increment,
-    decrement,
-    addBy,
-    setCounter
-} from "../slices/counterSlice";
-import {setStatusHome, setRooms} from "../slices/statusSlice";
+import {setStatusHome} from "../slices/statusSlice";
 
 export const socketMiddleware = (store) => {
     let socket = Socket;
@@ -23,6 +17,7 @@ export const socketMiddleware = (store) => {
                 socket = io("http://localhost:3001");
             }
             socket.on("connect", () => {
+                console.log("CONNECTED TO HOST");
                 store.dispatch(setConnected());
             });
         }
@@ -36,6 +31,7 @@ export const socketMiddleware = (store) => {
 
             if (setStatusHome.match(action)) {
                 socket?.close();
+                store.dispatch(setDisconnected());
             }
         }
     };

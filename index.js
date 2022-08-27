@@ -34,6 +34,10 @@ io.on("connection", (socket) => {
         clients = clients.filter(m => { return m.id !== socket.id });
         //TODO remove client from the room he was in;
     });
+
+    socket.on('readyForNextPiece', () => {
+
+    })
 });
 
 server.listen(3001, () => {
@@ -53,7 +57,7 @@ app.get('/askRoom', (req, res) => {
         .catch(() => res.send(JSON.stringify({ message: 'This room does not exist.'})));
 })
 
-app.get('/createRoom', async (req, res) => {
+app.get('/createRoom', (req, res) => {
     let name = req.query.name;
     let password = req.query.password;
     let mode = req.query.mode
@@ -61,6 +65,11 @@ app.get('/createRoom', async (req, res) => {
     _Room.createRoom(rooms, name, password, mode)
         .then((r) => res.send(r))
         .catch(() => res.send(JSON.stringify('ROOMNAME-TAKEN')));
+});
+
+app.get('/getPiece', (req, res) => {
+   //So here to send a piece: something like
+    //_Piece.getPiece().then(r => res.send(r)); because its asynchronous.
 });
 
 app.listen(8080, () => {

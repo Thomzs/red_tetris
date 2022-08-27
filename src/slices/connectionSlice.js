@@ -3,20 +3,26 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     _connected: false,
     _connecting: false,
+    _room: null,
 };
 
 const connectionSlice = createSlice({
     name: "connection",
     initialState,
     reducers: {
-        startConnecting(state) {
+        startConnecting: (state, action) => {
             state._connecting = true;
+            state._room = action.payload;
         },
-        setConnected(state) {
+        setConnected: (state) => {
             state._connected = true;
         },
+        setDisconnected: (state) => {
+            state._connected = false;
+            state._room = null;
+        }
     },
 });
 
-export const { startConnecting, setConnected } = connectionSlice.actions;
+export const { startConnecting, setConnected, setDisconnected } = connectionSlice.actions;
 export default connectionSlice.reducer;

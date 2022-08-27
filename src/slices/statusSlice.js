@@ -4,6 +4,7 @@ const statusSlice = createSlice({
     name: 'status',
     initialState: {
         _status: 'INTRO',
+        _gameStatus: 'ReadyForNextPiece',
     },
     reducers: {
         setStatusHome: (state) => {

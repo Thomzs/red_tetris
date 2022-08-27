@@ -20,6 +20,7 @@ class Room {
                     password: password,
                     private: (password !== ''),
                     players: [],
+                    mode: mode,
                     status: Status.Lobby,
                 };
                 rooms.push(newRoom);

@@ -1,8 +1,4 @@
-
 import {useDispatch, useSelector} from "react-redux";
-import '../../assets/styles/nav.scss';
-import {useEffect} from "react";
-import 'bootstrap/dist/css/bootstrap.min.css';
 import {Button, Container, Form, FormControl, Nav, Navbar} from "react-bootstrap";
 import {setUsername} from "../../slices/playerSlice";
 import {debounce} from "../../utils/debounce";
@@ -27,7 +23,7 @@ const NavBar = () => {
 
     //TODO Change game status from GAME to HOME
     return (
-        <Navbar bg="light nav-style" expand="lg">
+        <Navbar bg="light nav-style d-block w-100" expand="lg">
             <Container fluid>
                 <Navbar.Brand className="regularText"><span className="tetris">Red</span>Tetris.</Navbar.Brand>
                 <Navbar.Toggle aria-controls="navbarScroll" />

@@ -1,5 +1,4 @@
 import {useDispatch, useSelector} from "react-redux";
-import '../assets/styles/intro.scss';
 import {useEffect} from "react";
 import {setStatusHome} from "../slices/statusSlice";
 
