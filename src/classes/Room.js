@@ -24,7 +24,7 @@ class Room {
                     status: Status.Lobby,
                 };
                 rooms.push(newRoom);
-                resolve();
+                resolve(newRoom);
             }
         });
     }
