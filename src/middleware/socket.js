@@ -2,6 +2,7 @@ import { io, Socket } from "socket.io-client";
 import {setConnected, setDisconnected, startConnecting} from "../slices/connectionSlice";
 import { setUsername } from "../slices/playerSlice";
 import {setStatusHome} from "../slices/statusSlice";
+import {setRoom} from "../slices/roomSlice";
 
 export const socketMiddleware = (store) => {
     let socket = Socket;
@@ -16,9 +17,17 @@ export const socketMiddleware = (store) => {
             if (!connected) {
                 socket = io("http://localhost:3001");
             }
-            socket.on("connect", () => {
-                console.log("CONNECTED TO HOST");
+            socket.on('joinRoomOk', (data) => {
+                store.dispatch(setRoom(data));
                 store.dispatch(setConnected());
+            });
+
+            socket.on("connect", () => {
+                socket.emit('requestJoinRoom', {
+                    room: store.getState()?.connection?._room,
+                    password: store.getState()?.connection?._password,
+                    player: store.getState()?.player
+                });
             });
         }
         if (connected) {

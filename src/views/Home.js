@@ -47,14 +47,14 @@ function RoomsList(props) {
             inputPros.className = 'row border-bottom';
         }
 
-        if (room.private && room.status !== Status.InGame) {  //Password prompt for a private room
+        if (room.private && room.status !== Status.InGame && room.players.length < 8) {  //Password prompt for a private room
             inputPros.onClick = () => {
                 clickedRoom = room;
                 props.handle()
             };
-        } else if (room.status !== Status.InGame) {
+        } else if (room.status !== Status.InGame && room.players.length < 8) {
             inputPros.onClick = () => {
-                props.connect(room);
+                props.connect(room, '');
             }
         }
 
@@ -87,8 +87,8 @@ const Home = () => {
         defaultValues: initialState
     });
 
-    const initGameConnection = (room) => {
-         dispatch(startConnecting(room));
+    const initGameConnection = (room, password) => {
+         dispatch(startConnecting({room: room, password: password}));
     };
 
     useEffect(() => {
@@ -132,7 +132,7 @@ const Home = () => {
             }
         } else if (ret.id !== undefined && ret.id !== null) {
             handleCloseForm();
-            initGameConnection(ret);
+            initGameConnection(ret, data.password);
         } else {
             handleCloseForm();
             alert('Something unexpected happened. Please try again');
@@ -157,7 +157,7 @@ const Home = () => {
         }
         if (ret === true) {
             handleClosePrompt();
-            initGameConnection(clickedRoom);
+            initGameConnection(clickedRoom, data.password);
             //initGameConnection(); //params: room id, password}
         } else {
              if (wrongPassword !== '') {

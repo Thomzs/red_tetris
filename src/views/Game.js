@@ -1,6 +1,7 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useState} from "react";
 import {requestPiece} from "../utils/api";
+import Chat from "./components/Chat";
 
 //TODO if not connected go connect
 
@@ -81,7 +82,7 @@ const Game = () => {
                     </div>
                 </div>
                 <div className="col-4 bg-light d-flex align-items-center justify-content-center">
-                    <big>CHAT</big>
+                    <Chat />
                 </div>
             </div>
         </section>

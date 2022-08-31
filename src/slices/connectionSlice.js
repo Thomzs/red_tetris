@@ -4,6 +4,7 @@ const initialState = {
     _connected: false,
     _connecting: false,
     _room: null,
+    _password: '',
 };
 
 const connectionSlice = createSlice({
@@ -12,7 +13,8 @@ const connectionSlice = createSlice({
     reducers: {
         startConnecting: (state, action) => {
             state._connecting = true;
-            state._room = action.payload;
+            state._room = action.payload.room;
+            state._password = action.payload.password;
         },
         setConnected: (state) => {
             state._connected = true;
