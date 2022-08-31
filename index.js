@@ -62,7 +62,7 @@ io.of("/").adapter.on("join-room", (room, id) => {
     let player = players.find(p => p.socket.id === id);
     if (!player) return;
 
-    _Room.joinRoom(rooms, room, player) //TODO Pass was checked
+    _Room.joinRoom(rooms, room, player)
         .then((room) => {
             let tmp = Object.assign({}, room);
             tmp = removeKeys(tmp, 'socket'); //Socket object should be private,
