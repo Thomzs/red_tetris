@@ -64,7 +64,7 @@ class Room {
     }
 
     joinRoom = (rooms, name, player) => {
-        return new Promise(((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             for (let i = 0; i < rooms.length; i++) {
                 if (rooms[i].name === name) {
                     rooms[i].players.push(player);
@@ -73,10 +73,23 @@ class Room {
                 }
             }
             reject();
-        }))
+        });
     }
 
-    leaveRoom = (rooms, socketId) => {
+    removePlayer = (rooms, socketId) => {
+        return new Promise((resolve, reject) => {
+            for (let i = 0; i < rooms.length; i++) {
+                for (let j = 0; j < rooms[i].players.length; j++) {
+                    if (rooms[i].players[j].socket.id === socketId) {
+                        rooms[i].players.splice(j, 1);
+                        //TODO If room empty, delete room from rooms & resolve null
+                        resolve(rooms[i]);
+                        return;
+                    }
+                }
+            }
+            reject();
+        });
     }
 }
 

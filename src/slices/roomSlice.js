@@ -31,6 +31,9 @@ const roomSlice = createSlice({
         addPlayer: (state, action) => {
             state._players.push(action.payload);
         },
+        setPlayers: (state, action) => {
+            state._players = action.payload;
+        }
     },
 });
 
@@ -39,6 +42,7 @@ export const {
     setAdmin,
     addToChat,
     addPlayer,
+    setPlayers,
 } = roomSlice.actions;
 
 export default roomSlice.reducer;

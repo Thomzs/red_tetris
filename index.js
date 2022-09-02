@@ -1,10 +1,8 @@
 const express = require("express");
 const app = express();
-const http = require("http");
 const cors = require("cors");
 const {Server} = require("socket.io");
 const {Status} = require("./src/utils/status");
-const server = http.createServer(app);
 const { v4: uuidv4 } = require('uuid');
 const Room = require("./src/classes/Room");
 const Player = require("./src/classes/Player");
@@ -24,7 +22,7 @@ let rooms = [];
 //just for dev purposes
 rooms.push({id: uuidv4(), name: 'La room 1', password: 'abcde', private: true, players: [], mode: 'classic', status: Status.InGame, chat: []}, {id: uuidv4(), name: 'Wesh les bgs', password: '', private: false, players: [], mode: 'classic', status: Status.Lobby, chat: []});
 
-const io = new Server(server, {
+const io = new Server({
     cors: {
         origin: "*",
         methods: ["GET", "POST"],
@@ -33,21 +31,30 @@ const io = new Server(server, {
 io.adapter(createAdapter(pubClient, subClient));
 
 app.use(cors());
+pubClient.connect().then();
+subClient.connect().then();
 
 io.on("connection", async(socket) => {
     console.log("CONNECTION FROM: ", socket.handshake.headers.origin);
     await _Player.newPlayer(players, socket);
 
     socket.on("disconnect", async () => {
-        players = players.filter(p => { return p.socket.id !== socket.id });
-        //TODO remove client from the room he was in;
+        _Room.removePlayer(rooms, socket.id)
+            .then((_room) => {
+                if (_room !== null) { //null room means the player was last to leave, and the room is deleted.
+                    let tmp = Object.assign(_room.players);
+                    socket.to(_room.name).emit('updatePlayers', removeKeys(tmp, 'socket'));
+                }
+                players = players.filter(p => { return p.socket.id !== socket.id });
+            })
+            .catch(() => {console.log('Error removing player from a room')});
     });
 
     socket.on('requestJoinRoom', async (data) => {
         await _Player.updatePlayer(players, socket.id, data.player);
         _Room.checkRoomPassword(rooms, data.room.id, data.room.password)
             .then(_ => socket.join(data.room.name))///If yes join
-            .then(_ => socket.emit('joinError'))///Else joinError.
+            .catch(_ => socket.emit('joinError'))///Else joinError.
     });
 
     socket.on('readyForNextPiece', () => {
@@ -57,22 +64,27 @@ io.on("connection", async(socket) => {
 
 io.of("/").adapter.on("join-room", (room, id) => {
     console.log(`socket ${id} has joined room ${room}`);
-    if (!rooms.length || !players.length) return;
+    if (!rooms.length || !players.length || room === id) return;
 
     let player = players.find(p => p.socket.id === id);
     if (!player) return;
 
     _Room.joinRoom(rooms, room, player)
-        .then((room) => {
-            let tmp = Object.assign({}, room);
+        .then((_room) => {
+            let tmp = Object.assign({}, _room);
             tmp = removeKeys(tmp, 'socket'); //Socket object should be private,
             player?.socket.emit('joinRoomOk', tmp);
+            player?.socket.to(room).emit('newPlayer', removeKeys(player, 'socket'));
         })
         .catch(() => player?.socket.emit('joinError'));
 });
 
-server.listen(3001, () => {
-    console.log("SERVER RUNNING ON PORT 3001");
+pubClient.on("error", (err) => {
+    console.log(err.message);
+});
+
+subClient.on("error", (err) => {
+    console.log(err.message);
 });
 
 app.get('/rooms', (req,res) => {
@@ -102,6 +114,8 @@ app.get('/getPiece', (req, res) => {
    //So here to send a piece: something like
     //_Piece.getPiece().then(r => res.send(r)); because its asynchronous.
 });
+
+io.listen(3001);
 
 app.listen(8080, () => {
     console.log('Listening on por 8080');

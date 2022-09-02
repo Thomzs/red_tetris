@@ -2,7 +2,7 @@ import { io, Socket } from "socket.io-client";
 import {setConnected, setDisconnected, startConnecting} from "../slices/connectionSlice";
 import { setUsername } from "../slices/playerSlice";
 import {setStatusHome} from "../slices/statusSlice";
-import {setRoom} from "../slices/roomSlice";
+import {addPlayer, setPlayers, setRoom} from "../slices/roomSlice";
 
 export const socketMiddleware = (store) => {
     let socket = Socket;
@@ -29,6 +29,14 @@ export const socketMiddleware = (store) => {
                     player: store.getState()?.player
                 });
             });
+
+            socket.on('newPlayer', (data) => {
+                store.dispatch(addPlayer(data));
+            });
+
+            socket.on('updatePlayers', (data) => {
+                store.dispatch(setPlayers(data));
+            })
         }
         if (connected) {
 
