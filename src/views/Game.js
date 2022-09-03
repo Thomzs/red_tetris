@@ -2,6 +2,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useState} from "react";
 import {requestPiece} from "../utils/api";
 import Chat from "./components/Chat";
+import {Container} from "react-bootstrap";
 
 //TODO if not connected go connect
 
@@ -73,7 +74,7 @@ const Game = () => {
     return (
         <section className="container-fluid h-100">
             <div className="row d-flex h-100">
-                <div className="col-8 border-end d-flex justify-content-center">
+                <div className="col-8 d-flex justify-content-center">
                     <div className="row align-self-center">
                         <div className="d-flex justify-content-center">
                             <Piece piece={piece}/>
@@ -81,8 +82,15 @@ const Game = () => {
                         <button className="btn btn-outline-dark mt-4" onClick={getPiece}>Get Next Piece</button>
                     </div>
                 </div>
-                <div className="col-4 bg-light d-flex align-items-center justify-content-center">
-                    <Chat />
+                <div className="col-4 bg-light p-0">
+                    <div className="d-flex flex-column w-100 h-100">
+                        <Container fluid className="h-50">
+                            <h4>Boards</h4>
+                        </Container>
+                        <Container fluid className="w-100 h-50 p-0 border-top">
+                            <Chat />
+                        </Container>
+                    </div>
                 </div>
             </div>
         </section>
