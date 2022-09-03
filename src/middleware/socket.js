@@ -1,8 +1,8 @@
 import { io, Socket } from "socket.io-client";
 import {setConnected, setDisconnected, startConnecting} from "../slices/connectionSlice";
 import { setUsername } from "../slices/playerSlice";
-import {setStatusHome} from "../slices/statusSlice";
-import {addPlayer, setPlayers, setRoom} from "../slices/roomSlice";
+import {setGameStatus, setStatusGame, setStatusHome} from "../slices/statusSlice";
+import {addPlayer, setPiece, setPlayers, setRoom} from "../slices/roomSlice";
 
 export const socketMiddleware = (store) => {
     let socket = Socket;
@@ -36,8 +36,14 @@ export const socketMiddleware = (store) => {
 
             socket.on('updatePlayers', (data) => {
                 store.dispatch(setPlayers(data));
-            })
+            });
+
+            socket.on('newPiece', (data) => {
+                store.dispatch(setGameStatus('placing'));
+                store.dispatch(setPiece(data));
+            });
         }
+
         if (connected) {
 
             if (setUsername.match(action) && store.getState().status._status === 'GAME') {
@@ -49,6 +55,10 @@ export const socketMiddleware = (store) => {
             if (setStatusHome.match(action)) {
                 socket?.close();
                 store.dispatch(setDisconnected());
+            }
+
+            if (setGameStatus.match(action) && action.payload.gameStatus === 'readyNext') {
+                socket.emit('readyNext', action.payload.board); //Tell server we are waiting for a tetrimino
             }
         }
     };

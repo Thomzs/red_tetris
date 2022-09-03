@@ -12,7 +12,8 @@ const roomSlice = createSlice({
         _players: [],
         _mode: 'classic',
         _name: null,
-        _password: ''
+        _password: '',
+        _currentPiece: null,
     },
     reducers: {
         setRoom: (state, action) => {
@@ -33,6 +34,9 @@ const roomSlice = createSlice({
         },
         setPlayers: (state, action) => {
             state._players = action.payload;
+        },
+        setPiece: (state, action) => {
+            state._currentPiece = action.payload;
         }
     },
 });
@@ -43,6 +47,7 @@ export const {
     addToChat,
     addPlayer,
     setPlayers,
+    setPiece,
 } = roomSlice.actions;
 
 export default roomSlice.reducer;

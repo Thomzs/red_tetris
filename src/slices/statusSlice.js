@@ -4,6 +4,7 @@ const statusSlice = createSlice({
     name: 'status',
     initialState: {
         _status: 'INTRO',
+        _gameStatus: 'initial',
     },
     reducers: {
         setStatusHome: (state) => {
@@ -12,12 +13,16 @@ const statusSlice = createSlice({
         setStatusGame: (state) => {
             state._status = 'GAME';
         },
+        setGameStatus: (state, action) => {
+            state._gameStatus = action.payload;
+        }
     },
 });
 
 export const {
     setStatusHome,
     setStatusGame,
+    setGameStatus,
 } = statusSlice.actions;
 
 export default statusSlice.reducer;
