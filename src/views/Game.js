@@ -76,7 +76,7 @@ const Game = () => {
                 <div className="col-8 border-end d-flex justify-content-center">
                     <div className="row align-self-center">
                         <div className="d-flex justify-content-center">
-                            <Piece piece={piece}/>
+                            <Board />
                         </div>
                         <button className="btn btn-outline-dark mt-4" onClick={getPiece}>Get Next Piece</button>
                     </div>
