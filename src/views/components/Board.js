@@ -9,6 +9,10 @@ import {occupied} from "../../utils/piece";
 //rotate, move left, move right update the piece, not the board.
 //drop updates the piece if it can go down. Otherwise, it calls dropPiece to update the board.
 
+function bit_test(num, bit) {
+    return ((num>>bit) % 2 !== 0);
+}
+
 const Board = () => {
     const {status, room} = useSelector((state) => state); //useless for now
     const [piece, setPiece] = useState(null);
@@ -22,7 +26,7 @@ const Board = () => {
     }
 
     const doDrop = () => { //Running every seconds, AND on key.Down pressed
-        let ret = move(DIR.DOWN); //update the piece
+        let ret = move(board, piece, DIR.DOWN); //update the piece
 
         if (!ret) {
             setScore(score + 10);
@@ -65,7 +69,7 @@ const Board = () => {
             lose(); //if not Loose;
             setGameStatus({gameStatus: 'loose', board: board});
         }
-        setInterval(doDrop, 1000);
+   //     setInterval(doDrop, 1000);
     }, [piece]);
 
     useEffect(() => {
@@ -76,12 +80,11 @@ const Board = () => {
     //Foreach rows and for each column of game._bord, display each cell
     return (
         <section onKeyUp={handleKey}>
-            <div className="col border border-dark">
-            {board.map((row, i) => {
+            <div className="col border border-dark" style={{width: '300px'}}>
+            {board.map((row, j) => {
                 return ( //Don't remove the key attribute
-                    <div key={i} className="row">
-                        {row.map((cell, j) => {
-                            if (piece !== null) console.log(piece);
+                    <div key={j} className="row m-0" style={{width: '300px'}}>
+                        {row.map((cell, i) => { //Drawing coordinates are reverted (y, x)
                             let inputPros = {
                                 style: {
                                     height: '30px',
@@ -93,20 +96,20 @@ const Board = () => {
                             if (cell !== null) {
                                 inputPros.style.background = cell.color; //cell color
                                 inputPros.className += ' border border-dark'
-                            } else if (piece !== null) {
-                                let tmp = piece.type[piece.dir];
+                            } else if (piece !== null && piece !== undefined) {
+                                let tmp = piece.type.blocks[piece.dir];
 
                                 if ([0, 1, 2, 3].includes(i - piece.x)
                                     && [0, 1, 2, 3].includes(j - piece.y)
-                                    && tmp.block >> ((i - piece.x) * (j - piece.y)) === 1) {
+                                    && bit_test(tmp, (i - piece.x) * 4 + (j - piece.y))) {
 
-                                    inputPros.style.background = tmp.color; //cell color
+                                    inputPros.style.background = piece.type.color; //cell color
                                     inputPros.className += ' border border-dark';
                                 }
                             }
 
                             return ( //Don't remove the key attribute
-                                <div key={j} {...inputPros}/>
+                                <div key={i} {...inputPros}/>
                             );
                         })}
                     </div>

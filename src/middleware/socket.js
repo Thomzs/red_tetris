@@ -3,6 +3,7 @@ import {setConnected, setDisconnected, startConnecting} from "../slices/connecti
 import { setUsername } from "../slices/playerSlice";
 import {setGameStatus, setStatusGame, setStatusHome} from "../slices/statusSlice";
 import {addPlayer, setPiece, setPlayers, setRoom} from "../slices/roomSlice";
+import {DIR} from "../classes/Piece_utils";
 
 export const socketMiddleware = (store) => {
     let socket = Socket;
@@ -39,6 +40,7 @@ export const socketMiddleware = (store) => {
             });
 
             socket.on('newPiece', (data) => {
+                console.log(data);
                 store.dispatch(setGameStatus('placing'));
                 store.dispatch(setPiece(data));
             });

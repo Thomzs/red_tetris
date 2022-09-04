@@ -43,7 +43,7 @@ let invalid;
 // ---------- Setters and getters ---------- //
 
 function setScore(n) {
-    score = n; invalidateScore();
+ //   score = n; invalidateScore();
 };
 
 function addScore(n) {
@@ -52,12 +52,12 @@ function addScore(n) {
 
 function setRows(n) {
     rows = n; nextStep = Math.max(speed.min, speed.start - (speed.decrement * rows));
-    invalidateRows();
+ //   invalidateRows();
 };
 
-function addRows(n) {
-    setRows(rows + n);
-};
+// function addRows(n) {
+//     setRows(rows + n);
+// };
 
 // Checks whether a (x, y) position is already occupied
 function getBlock(blocks, x,y) {
@@ -66,7 +66,7 @@ function getBlock(blocks, x,y) {
 
 function setBlock(blocks,x,y,type) {
     blocks[x] = blocks[x] || []; blocks[x][y] = type;
-    invalidate();
+ //   invalidate();
     return blocks;
 };
 
@@ -74,27 +74,27 @@ function setBlock(blocks,x,y,type) {
 //     currPiece = piece || randomPiece(); invalidate();
 // };
 
-function setNextPiece(piece) {
-    nextStep = piece || randomPiece(); invalidateNext();
-};
+// function setNextPiece(piece) {
+//     nextStep = piece || randomPiece(); invalidateNext();
+// };
 
 // ----------------------------------------- //
 
-function invalidate() {
-    invalid.court  = true;
-};
-
-function invalidateNext() {
-    invalid.next   = true;
-};
-
-function invalidateScore() {
-    invalid.score  = true;
-};
-
-function invalidateRows() {
-    invalid.rows   = true;
-};
+// function invalidate() {
+//     invalid.court  = true;
+// };
+//
+// function invalidateNext() {
+//     invalid.next   = true;
+// };
+//
+// function invalidateScore() {
+//     invalid.score  = true;
+// };
+//
+// function invalidateRows() {
+//     invalid.rows   = true;
+// };
 
 // export function keydown(ev) {
 //     switch(ev.keyCode) {
@@ -134,10 +134,11 @@ export function move(blocks, currPiece, dir) {
         case DIR.DOWN:  y = y + 1; break;
     }
     if (unoccupied(blocks, currPiece.type, x, y, currPiece.dir)) {
-        currPiece.x = x;
-        currPiece.y = y;
-        invalidate();
-        return currPiece;
+        let tmp = {...currPiece};
+        tmp.x = x;
+        tmp.y = y;
+     //   invalidate();
+        return tmp;
     }
     else {
         return false;
@@ -173,7 +174,7 @@ export function rotate(blocks, currPiece) {
     let newDir = (currPiece.dir === DIR.MAX ? DIR.MIN : currPiece.dir + 1);
     if (unoccupied(blocks, currPiece.type, currPiece.x, currPiece.y, newDir)) {
         currPiece.dir = newDir;
-        invalidate();
+       // invalidate();
     }
     return currPiece;
 };
