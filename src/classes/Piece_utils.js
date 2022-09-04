@@ -1,3 +1,4 @@
+export let LEFT = undefined;
 let i = { blocks: [0x0F00, 0x2222, 0x00F0, 0x4444], color: 'cyan'   };
 let j = { blocks: [0x44C0, 0x8E00, 0x6440, 0x0E20], color: 'blue'   };
 let k = { blocks: [0x4460, 0x0E80, 0xC440, 0x2E00], color: 'orange' };
