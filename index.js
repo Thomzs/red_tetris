@@ -6,6 +6,7 @@ const {Status} = require("./src/utils/status");
 const { v4: uuidv4 } = require('uuid');
 const Room = require("./src/classes/Room");
 const Player = require("./src/classes/Player");
+const Piece = require("./src/classes/Piece");
 const removeKeys = require("./src/utils/removeKeys");
 const { createClient } = require("redis");
 const { createAdapter } = require("@socket.io/redis-adapter");
@@ -15,6 +16,7 @@ const subClient = pubClient.duplicate();
 
 const _Room = new Room();
 const _Player = new Player();
+const _Piece = new Piece();
 
 let players = [];
 let rooms = [];
@@ -57,9 +59,12 @@ io.on("connection", async(socket) => {
             .catch(_ => socket.emit('joinError'))///Else joinError.
     });
 
-    socket.on('readyForNextPiece', () => {
-
-    })
+    socket.on('readyNext', () => {
+        _Piece.getPiece()
+            .then((piece) => {
+                socket.emit('newPiece', piece);
+            })
+    });
 });
 
 io.of("/").adapter.on("join-room", (room, id) => {

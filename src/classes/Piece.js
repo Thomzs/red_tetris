@@ -1,4 +1,3 @@
-import * as lib from "../utils/piece";
 const { game_board } = require("./Piece_utils.js");
 const { colors } = require("./Piece_utils.js");
 const { gamePieces } = require("./Piece_utils.js");

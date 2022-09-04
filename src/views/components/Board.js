@@ -81,6 +81,7 @@ const Board = () => {
                 return ( //Don't remove the key attribute
                     <div key={i} className="row">
                         {row.map((cell, j) => {
+                            if (piece !== null) console.log(piece);
                             let inputPros = {
                                 style: {
                                     height: '30px',
