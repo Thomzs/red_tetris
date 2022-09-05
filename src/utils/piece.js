@@ -142,7 +142,7 @@ export function move(blocks, currPiece, dir) {
 
 
 // TODO better implementation, this is only temporary
-export function lose() {
+export function loose() {
     alert("GAME OVER");
 }
 

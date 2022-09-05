@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useState} from "react";
-import {drop, dropPiece, lose, makeArray, move, rotate} from "../../utils/piece";
+import {drop, dropPiece, loose, makeArray, move, rotate} from "../../utils/piece";
 import {setGameStatus} from "../../slices/statusSlice";
 import {DIR, KEY} from "../../classes/Piece_utils";
 import {occupied, eachBlock} from "../../utils/piece";
@@ -25,7 +25,7 @@ const Board = () => {
         return board //TODO remove line if there is line(s) to be removed
     }
 
-    const doDrop = () => { //Running every seconds, AND on key.Down pressed
+    const doDrop = () => { //Running every second, AND on key.Down pressed
         let ret = move(board, piece, DIR.DOWN); //update the piece
 
         if (!ret) {
@@ -68,7 +68,7 @@ const Board = () => {
         if (piece === null) return;
 
         if (occupied(board, piece.type, piece.x, piece.y, piece.dir)) { //Checking if the new piece can be dropped
-            lose(); //if not Loose;
+            loose(); //if not Loose;
             setGameStatus({gameStatus: 'loose', board: board});
         }
    //     setInterval(doDrop, 1000);
