@@ -36,7 +36,7 @@ const Board = () => {
             setGameStatus({status: 'readyNext', board: board});
             clearInterval(doDrop); //If the piece is placed, then wait for another
         } else {
-            setPiece(piece);
+            setPiece(ret);
         }
     };
 
@@ -46,18 +46,20 @@ const Board = () => {
         switch (event.keyCode) {
             case KEY.LEFT:
                 ret = move(board, piece, DIR.LEFT);
-                if (ret !== null) setPiece(ret);
+                if (ret !== false) setPiece(ret);
                 break;
             case KEY.RIGHT:
                 ret = move(board, piece, DIR.RIGHT);
-                if (ret !== null) setPiece(ret);
+                if (ret !== false) setPiece(ret);
                 break;
             case KEY.UP:
                 ret = rotate(board, piece);
-                if (ret) setPiece(ret);
+                if (ret !== false) setPiece(ret);
                 break;
             case KEY.DOWN:
                 doDrop();
+                break;
+            default:
                 break;
         }
     };
@@ -79,7 +81,7 @@ const Board = () => {
 
     //Foreach rows and for each column of game._bord, display each cell
     return (
-        <section onKeyUp={handleKey}>
+        <section id="board-section" tabIndex="0" onKeyUp={handleKey}>
             <div className="col border border-dark" style={{width: '300px'}}>
             {board.map((row, j) => {
                 return ( //Don't remove the key attribute
@@ -94,18 +96,22 @@ const Board = () => {
                             };
 
                             if (cell !== null) {
-                                inputPros.style.background = cell.color; //cell color
+                                inputPros.style.background = cell.color;
                                 inputPros.className += ' border border-dark'
                             } else if (piece !== null && piece !== undefined) {
+                                //console.log(piece);
                                 let tmp = piece.type.blocks[piece.dir];
 
-                                if ([0, 1, 2, 3].includes(i - piece.x)
-                                    && [0, 1, 2, 3].includes(j - piece.y)
-                                    && bit_test(tmp, (i - piece.x) * 4 + (j - piece.y))) {
 
-                                    inputPros.style.background = piece.type.color; //cell color
+                                if ([0, 1, 2, 3].includes(i - piece.x)
+                                    && [0, 1, 2, 3].includes(j - piece.y)) {
                                     inputPros.className += ' border border-dark';
+                                    if (bit_test(tmp, (i - piece.x) * 4 + (j - piece.y))) {
+
+                                     inputPros.style.background = piece.type.color;
+                                    // inputPros.className += ' border border-dark';
                                 }
+                            }
                             }
 
                             return ( //Don't remove the key attribute

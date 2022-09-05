@@ -1,18 +1,13 @@
-const gamePieces = require("../classes/Piece_utils.js");
-const KEY = require("../classes/Piece_utils");
-const DIR = require("../classes/Piece_utils");
-const speed = require("../classes/Piece_utils");
-const sizeX = require("../classes/Piece_utils");
-const sizeY = require("../classes/Piece_utils");
-const nu = require("../classes/Piece_utils");
-//const pieces = require("../classes/Piece_utils");
-const i = require("../classes/Piece_utils");
-const j = require("../classes/Piece_utils");
-const k = require("../classes/Piece_utils");
-const l = require("../classes/Piece_utils");
-const m = require("../classes/Piece_utils");
-const n = require("../classes/Piece_utils");
-const o = require("../classes/Piece_utils");
+const {DIR, speed, sizeY, sizeX} = require("../classes/Piece_utils");
+// const {nu} = require("../classes/Piece_utils");
+// const pieces = require("../classes/Piece_utils");
+// const i = require("../classes/Piece_utils");
+// const j = require("../classes/Piece_utils");
+// const k = require("../classes/Piece_utils");
+// const l = require("../classes/Piece_utils");
+// const m = require("../classes/Piece_utils");
+// const n = require("../classes/Piece_utils");
+// const o = require("../classes/Piece_utils");
 
 // Generate board game
 export function makeArray(w, h, val) {
@@ -60,7 +55,7 @@ function setRows(n) {
 // };
 
 // Checks whether a (x, y) position is already occupied
-function getBlock(blocks, x,y) {
+function getBlock(blocks, x, y) {
     return (blocks && blocks[x] ? blocks[x][y] : null);
 };
 
@@ -171,18 +166,19 @@ export function dropPiece(blocks, currPiece) {
 };
 
 export function rotate(blocks, currPiece) {
+    let tmp = {...currPiece};
     let newDir = (currPiece.dir === DIR.MAX ? DIR.MIN : currPiece.dir + 1);
     if (unoccupied(blocks, currPiece.type, currPiece.x, currPiece.y, newDir)) {
-        currPiece.dir = newDir;
+        tmp.dir = newDir;
        // invalidate();
     }
-    return currPiece;
+    return tmp;
 };
 
 // Helped function that iterates over all the cells in the tetris grid that the piece will occupy
 function eachBlock(blocks, type, x, y, dir, fn) {
-    let bit, result, row = 0, col = 0, _blocks = type.blocks[dir];
-    for(bit = 0x8000 ; bit > 0 ; bit = bit >> 1) {
+    let bit, row = 0, col = 0, _blocks = type.blocks[dir];
+    for (bit = 0x8000 ; bit > 0 ; bit = bit >> 1) {
         if (_blocks & bit) {
             fn(blocks, x + col, y + row);
         }
@@ -195,21 +191,22 @@ function eachBlock(blocks, type, x, y, dir, fn) {
 };
 
 // Selects random piece available pieces pool, duplicates inside pool to avoid not getting any piece
-function randomPiece() {
-    if (pieces.length === 0)
-        pieces = [i, i ,i , i, j, j, j, j, k, k, k, k, l, l, l, l, m, m, m, m, n, n, n, n, o, o, o, o];
-    // Not sure about the random piece selection below, may need to rework this line
-    //var type = pieces.splice(Math.random(0, pieces.length-1), 1)[0]; // remove a single piece
-
-    let type = pieces.splice(Math.floor(Math.random() * pieces.length - 1), 1)[0]; // remove a single piece
-    return { type: type, dir: DIR.UP, x: 2, y: 0 };
-};
+// function randomPiece() {
+//     if (pieces.length === 0)
+//         pieces = [i, i ,i , i, j, j, j, j, k, k, k, k, l, l, l, l, m, m, m, m, n, n, n, n, o, o, o, o];
+//     // Not sure about the random piece selection below, may need to rework this line
+//     //var type = pieces.splice(Math.random(0, pieces.length-1), 1)[0]; // remove a single piece
+//
+//     let type = pieces.splice(Math.floor(Math.random() * pieces.length - 1), 1)[0]; // remove a single piece
+//     return { type: type, dir: DIR.UP, x: 2, y: 0 };
+// };
 
 // Checks if any of the required blocks to place the next piece are occupied or not
 export function occupied(blocks, type, x, y, dir) {
     let result = false
     eachBlock(blocks, type, x, y, dir, function(blocks, x, y) {
-        if ((x < 0) || (x >= sizeX) || (y < 0) || (y >= sizeY) || getBlock(blocks, x,y))
+        if ((x < 0 || x >= sizeX) || (y < 0 || y >= sizeY) || getBlock(blocks, x, y))
+        //if ((x < 0) || (x >= sizeX) || (y < 0) || (y >= sizeY) || getBlock(blocks, x,y))
             result = true;
     });
     return (result);
