@@ -11,6 +11,7 @@ const initialState = {
     _name: null,
     _password: '',
     _currentPiece: null,
+    _score: 0,
 }
 
 const roomSlice = createSlice({
@@ -39,6 +40,13 @@ const roomSlice = createSlice({
         setPiece: (state, action) => {
             state._currentPiece = action.payload;
         },
+        setScore: (state, action) => {
+            state._score = action.payload;
+        },
+        resetGame: (state) => {
+            state._score = 0;
+            state._currentPiece = null;
+        },
         reset: () => initialState,
     },
 });
@@ -50,6 +58,8 @@ export const {
     addPlayer,
     setPlayers,
     setPiece,
+    setScore,
+    resetGame,
     reset,
 } = roomSlice.actions;
 

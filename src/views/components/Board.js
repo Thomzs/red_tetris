@@ -4,6 +4,7 @@ import {dropPiece, loose, makeArray, move, rotate, occupied, removeLines} from "
 import {setGameStatus} from "../../slices/statusSlice";
 import {DIR, KEY} from "../../classes/Piece_utils";
 import {useInterval} from "../../utils/useInterval";
+import {setScore} from "../../slices/roomSlice";
 
 //Render the board, and the piece above the board.
 //rotate, move left, move right update the piece, not the board.
@@ -17,7 +18,6 @@ const Board = () => {
     const {status, room} = useSelector((state) => state); //useless for now
     const [piece, setPiece] = useState(null);
     const [board, setBoard] = useState(makeArray(10, 20, 0));
-    const [score, setScore] = useState(0);
 
     const dispatch = useDispatch();
 
@@ -31,12 +31,11 @@ const Board = () => {
         let ret = move(board, piece, DIR.DOWN); //update the piece
 
         if (!ret) {
-            setScore(score + 10);
             let tmp = board.map(inner => inner.slice());
             ret = removeLines(dropPiece(tmp, piece));
             setPiece(null);
             setBoard(ret.board);
-            setScore(ret.removedLines);
+            dispatch(setScore(room._score + ret.removedLines + 10));
             dispatch(setGameStatus({gameStatus: 'readyNext', board: board}));
             clearInterval(doDrop); //If the piece is placed, then wait for another
         } else {
