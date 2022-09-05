@@ -3,20 +3,20 @@ import {useEffect, useState} from "react";
 import {drop, dropPiece, lose, makeArray, move, rotate} from "../../utils/piece";
 import {setGameStatus} from "../../slices/statusSlice";
 import {DIR, KEY} from "../../classes/Piece_utils";
-import {occupied} from "../../utils/piece";
+import {occupied, eachBlock} from "../../utils/piece";
 
 //Render the board, and the piece above the board.
 //rotate, move left, move right update the piece, not the board.
 //drop updates the piece if it can go down. Otherwise, it calls dropPiece to update the board.
 
 function bit_test(num, bit) {
-    return ((num>>bit) % 2 !== 0);
+    return ((1 << bit) & (num & 0xFFFF));
 }
 
 const Board = () => {
     const {status, room} = useSelector((state) => state); //useless for now
     const [piece, setPiece] = useState(null);
-    const [board, setBoard] = useState(makeArray(10, 20, null));
+    const [board, setBoard] = useState(makeArray(10, 20, 0));
     const [score, setScore] = useState(0);
 
     const dispatch = useDispatch();
@@ -95,23 +95,22 @@ const Board = () => {
                                 className: "ratio-1x1 d-inline",
                             };
 
-                            if (cell !== null) {
+                            if (cell !== 0) {
                                 inputPros.style.background = cell.color;
                                 inputPros.className += ' border border-dark'
                             } else if (piece !== null && piece !== undefined) {
-                                //console.log(piece);
                                 let tmp = piece.type.blocks[piece.dir];
-
 
                                 if ([0, 1, 2, 3].includes(i - piece.x)
                                     && [0, 1, 2, 3].includes(j - piece.y)) {
                                     inputPros.className += ' border border-dark';
-                                    if (bit_test(tmp, (i - piece.x) * 4 + (j - piece.y))) {
 
-                                     inputPros.style.background = piece.type.color;
-                                    // inputPros.className += ' border border-dark';
+                                    if (bit_test(tmp, 15 - ((j - piece.y) * 4 + (i - piece.x)))) {
+
+                                        inputPros.style.background = piece.type.color;
+                                        //inputPros.className += ' border border-dark';
+                                    }
                                 }
-                            }
                             }
 
                             return ( //Don't remove the key attribute

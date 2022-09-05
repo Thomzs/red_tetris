@@ -176,7 +176,7 @@ export function rotate(blocks, currPiece) {
 };
 
 // Helped function that iterates over all the cells in the tetris grid that the piece will occupy
-function eachBlock(blocks, type, x, y, dir, fn) {
+export function eachBlock(blocks, type, x, y, dir, fn) {
     let bit, row = 0, col = 0, _blocks = type.blocks[dir];
     for (bit = 0x8000 ; bit > 0 ; bit = bit >> 1) {
         if (_blocks & bit) {
