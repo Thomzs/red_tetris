@@ -12,10 +12,6 @@ const Game = () => {
 
     const dispatch = useDispatch(); //react stuff
 
-    useEffect(() => {
-        dispatch(setGameStatus('initial')); //Reset
-    });
-
     const startGame = () => {
         if (status._gameStatus === 'initial') {
             dispatch(setGameStatus({gameStatus: 'readyNext', board: null}));

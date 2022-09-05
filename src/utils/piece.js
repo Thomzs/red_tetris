@@ -56,10 +56,11 @@ function setRows(n) {
 
 // Checks whether a (x, y) position is already occupied
 function getBlock(blocks, x, y) {
-    return (blocks && blocks[x] ? blocks[x][y] : null);
+    return (blocks && blocks[y] ? blocks[y][x] : null);
 };
 
-function setBlock(blocks,x,y,type) {
+function setBlock(blocks,y,x,type) {
+    console.log('x: ', x, '')
     blocks[x] = blocks[x] || []; blocks[x][y] = type;
  //   invalidate();
     return blocks;

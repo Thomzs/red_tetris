@@ -1,9 +1,10 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useState} from "react";
-import {drop, dropPiece, loose, makeArray, move, rotate} from "../../utils/piece";
+import {dropPiece, loose, makeArray, move, rotate} from "../../utils/piece";
 import {setGameStatus} from "../../slices/statusSlice";
 import {DIR, KEY} from "../../classes/Piece_utils";
-import {occupied, eachBlock} from "../../utils/piece";
+import {occupied} from "../../utils/piece";
+import {useInterval} from "../../utils/useInterval";
 
 //Render the board, and the piece above the board.
 //rotate, move left, move right update the piece, not the board.
@@ -26,14 +27,17 @@ const Board = () => {
     }
 
     const doDrop = () => { //Running every second, AND on key.Down pressed
+        if (!piece || status._gameStatus !== 'placing') return
+
         let ret = move(board, piece, DIR.DOWN); //update the piece
 
         if (!ret) {
             setScore(score + 10);
-            ret = removeLine(dropPiece(board, piece));
+            let tmp = board.map(inner => inner.slice());
+            ret = removeLine(dropPiece(tmp, piece));
             setPiece(null);
             setBoard(ret);
-            setGameStatus({status: 'readyNext', board: board});
+            dispatch(setGameStatus({gameStatus: 'readyNext', board: board}));
             clearInterval(doDrop); //If the piece is placed, then wait for another
         } else {
             setPiece(ret);
@@ -65,19 +69,21 @@ const Board = () => {
     };
 
     useEffect(() => {
-        if (piece === null) return;
+        if (piece === null || piece === undefined || status.gameStatus === 'placing') return;
 
+        dispatch(setGameStatus({gameStatus:'placing'}));
         if (occupied(board, piece.type, piece.x, piece.y, piece.dir)) { //Checking if the new piece can be dropped
             loose(); //if not Loose;
-            setGameStatus({gameStatus: 'loose', board: board});
+            dispatch(setGameStatus({gameStatus: 'loose', board: board}));
         }
-   //     setInterval(doDrop, 1000);
     }, [piece]);
 
     useEffect(() => {
         if (room._currentPiece !== null)
             setPiece(room._currentPiece);
     }, [room._currentPiece]);
+
+    useInterval(doDrop, 1000);
 
     //Foreach rows and for each column of game._bord, display each cell
     return (
@@ -102,14 +108,11 @@ const Board = () => {
                                 let tmp = piece.type.blocks[piece.dir];
 
                                 if ([0, 1, 2, 3].includes(i - piece.x)
-                                    && [0, 1, 2, 3].includes(j - piece.y)) {
+                                    && [0, 1, 2, 3].includes(j - piece.y)
+                                    && bit_test(tmp, 15 - ((j - piece.y) * 4 + (i - piece.x)))) {
+
+                                    inputPros.style.background = piece.type.color;
                                     inputPros.className += ' border border-dark';
-
-                                    if (bit_test(tmp, 15 - ((j - piece.y) * 4 + (i - piece.x)))) {
-
-                                        inputPros.style.background = piece.type.color;
-                                        //inputPros.className += ' border border-dark';
-                                    }
                                 }
                             }
 

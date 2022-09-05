@@ -14,7 +14,7 @@ const statusSlice = createSlice({
             state._status = 'GAME';
         },
         setGameStatus: (state, action) => {
-            state._gameStatus = action.payload;
+            state._gameStatus = action.payload.gameStatus;
         }
     },
 });

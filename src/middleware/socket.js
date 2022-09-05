@@ -41,7 +41,6 @@ export const socketMiddleware = (store) => {
 
             socket.on('newPiece', (data) => {
                 console.log(data);
-                store.dispatch(setGameStatus('placing'));
                 store.dispatch(setPiece(data));
             });
         }
