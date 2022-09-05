@@ -160,6 +160,29 @@ export function loose() {
 //     }
 // };
 
+function checkSingleLine(line) {
+    for (let i = 0; i <= 9; i++) {
+        if (line[i] === 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+export function removeLines(blocks) {
+    let removedLines = 0;
+    for (let y = 19; y >= 0; y--) {
+        if (checkSingleLine(blocks[y])) {
+            blocks.splice(y);
+            removedLines++;
+        }
+    }
+    for (let tmp = 0; tmp < removedLines; tmp++) {
+        blocks.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    }
+    return {board:blocks, removedLines:removedLines};
+};
+
 export function dropPiece(blocks, currPiece) {
     return eachBlock(blocks, currPiece.type, currPiece.x, currPiece.y, currPiece.dir, function(blocks, x, y) {
         setBlock(blocks, x, y, currPiece.type);

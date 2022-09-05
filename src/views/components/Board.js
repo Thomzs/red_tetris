@@ -1,9 +1,8 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useState} from "react";
-import {dropPiece, loose, makeArray, move, rotate} from "../../utils/piece";
+import {dropPiece, loose, makeArray, move, rotate, occupied, removeLines} from "../../utils/piece";
 import {setGameStatus} from "../../slices/statusSlice";
 import {DIR, KEY} from "../../classes/Piece_utils";
-import {occupied} from "../../utils/piece";
 import {useInterval} from "../../utils/useInterval";
 
 //Render the board, and the piece above the board.
@@ -22,9 +21,9 @@ const Board = () => {
 
     const dispatch = useDispatch();
 
-    const removeLine = (board) => {
+    /*const removeLine = (board) => {
         return board //TODO remove line if there is line(s) to be removed
-    }
+    }*/
 
     const doDrop = () => { //Running every second, AND on key.Down pressed
         if (!piece || status._gameStatus !== 'placing') return
@@ -34,9 +33,10 @@ const Board = () => {
         if (!ret) {
             setScore(score + 10);
             let tmp = board.map(inner => inner.slice());
-            ret = removeLine(dropPiece(tmp, piece));
+            ret = removeLines(dropPiece(tmp, piece));
             setPiece(null);
-            setBoard(ret);
+            setBoard(ret.board);
+            setScore(ret.removedLines);
             dispatch(setGameStatus({gameStatus: 'readyNext', board: board}));
             clearInterval(doDrop); //If the piece is placed, then wait for another
         } else {
