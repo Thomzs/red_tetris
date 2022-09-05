@@ -173,7 +173,7 @@ export function removeLines(blocks) {
     let removedLines = 0;
     for (let y = 19; y >= 0; y--) {
         if (checkSingleLine(blocks[y])) {
-            blocks.splice(y);
+            blocks.splice(y, 1);
             removedLines++;
         }
     }

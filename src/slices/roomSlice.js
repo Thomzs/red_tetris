@@ -4,7 +4,6 @@ import {Status} from "../utils/status";
 
 const initialState = {
     _id: null,
-    _gameStatus: 'ReadyForNextPiece',
     _admin: false,
     _chat: [],
     _players: [],

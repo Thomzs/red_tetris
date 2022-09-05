@@ -69,6 +69,13 @@ const Board = () => {
     };
 
     useEffect(() => {
+        if (status._gameStatus === 'initial') {
+            setBoard(makeArray(10, 20, 0));
+            setPiece(null);
+        }
+    }, [status._gameStatus]);
+
+    useEffect(() => {
         if (piece === null || piece === undefined || status.gameStatus === 'placing') return;
 
         dispatch(setGameStatus({gameStatus:'placing'}));

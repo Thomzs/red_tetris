@@ -15,6 +15,8 @@ const Game = () => {
     const startGame = () => {
         if (status._gameStatus === 'initial') {
             dispatch(setGameStatus({gameStatus: 'readyNext', board: null}));
+        } else {
+            dispatch(setGameStatus({gameStatus: 'initial'}));
         }
     }
 
