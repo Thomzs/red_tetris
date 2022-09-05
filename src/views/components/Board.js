@@ -81,7 +81,7 @@ const Board = () => {
 
     //Foreach rows and for each column of game._bord, display each cell
     return (
-        <section id="board-section" tabIndex="0" onKeyUp={handleKey}>
+        <section id="board-section" tabIndex="0" onKeyDown={handleKey}>
             <div className="col border border-dark" style={{width: '300px'}}>
             {board.map((row, j) => {
                 return ( //Don't remove the key attribute
