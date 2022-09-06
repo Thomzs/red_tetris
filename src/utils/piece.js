@@ -23,19 +23,19 @@ let rows = 0; // Number of cleaned row
 let cumulativeCleanedRows = 0; // If multiple rows cleaned at onces, allows score calculation
 let nextStep; // How long before current piece drops by 1 row
 
-function addScore(n) {
+export function addScore(n) {
     score = score + n;
 };
 
-function setRows(n) {
+export function setRows(n) {
     rows = n; nextStep = Math.max(speed.min, speed.start - (speed.decrement * rows));
 };
 
-function getBlock(blocks, x, y) {
+export function getBlock(blocks, x, y) {
     return (blocks && blocks[y] ? blocks[y][x] : null);
 };
 
-function setBlock(blocks,y,x,type) {
+export function setBlock(blocks,y,x,type) {
     blocks[x] = blocks[x] || []; blocks[x][y] = type;
     return blocks;
 };
@@ -64,7 +64,7 @@ export function loose() {
     alert("GAME OVER");
 }
 
-function checkSingleLine(line) {
+export function checkSingleLine(line) {
     for (let i = 0; i <= 9; i++) {
         if (line[i] === 0) {
             return false;
@@ -143,3 +143,6 @@ export function occupied(blocks, type, x, y, dir) {
 export function unoccupied(blocks, type, x, y, dir) {
     return !occupied(blocks, type, x, y, dir);
 };
+
+//module.exports = {occupied, unoccupied, checkSingleLine, removeLines, dropPiece, eachBlock, makeArray, move, loose,
+                    //getBlock, addScore};
