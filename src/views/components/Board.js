@@ -63,6 +63,29 @@ const Board = () => {
         }
     };
 
+    const onClickMoveListener = (event) => {
+        let keyCode;
+        console.log(keyCode);
+        console.log(event.target);
+        switch (event.target.id) {
+            case "left-button":
+                keyCode = KEY.LEFT;
+                break;
+            case "right-button":
+                keyCode = KEY.RIGHT;
+                break;
+            case "down-button":
+                keyCode = KEY.DOWN;
+                break;
+            case "up-button":
+                keyCode = KEY.UP;
+                break;
+            default:
+                break;
+        };
+        handleKey({keyCode:keyCode});
+    }
+
     const handleKey = (event) => { //Handle keys
         let ret;
 
@@ -153,10 +176,10 @@ const Board = () => {
                 </div>
                 <div className="row d-flex mt-3">
                     <div className="col d-flex align-content-center justify-content-center">
-                        <button className="btn btn-outline-dark me-1">left ←</button>
-                        <button className="btn btn-outline-dark me-1">right →</button>
-                        <button className="btn btn-outline-dark me-1">down ↓</button>
-                        <button className="btn btn-outline-dark me-1">rotate ↑</button>
+                        <button className="btn btn-outline-dark me-1" id="left-button" onClick={onClickMoveListener}>left ←</button>
+                        <button className="btn btn-outline-dark me-1" id="right-button" onClick={onClickMoveListener}>right →</button>
+                        <button className="btn btn-outline-dark me-1" id="down-button" onClick={onClickMoveListener}>down ↓</button>
+                        <button className="btn btn-outline-dark me-1" id="up-button" onClick={onClickMoveListener}>rotate ↑</button>
                     </div>
                 </div>
             </div>
