@@ -1,7 +1,8 @@
-//import {expect, jest, test} from '@jest/globals';
-//const { checkSingleLine } = require("./piece.js");
-import {checkSingleLine, getBlock, makeArray, setBlock} from "./piece";
-import {l} from "../classes/Piece_utils";
+import { checkSingleLine, getBlock, makeArray, move, setBlock, eachBlock, unoccupied,
+         occupied} from "./piece";
+import { l, DIR } from "../classes/Piece_utils";
+
+
 describe('lines and blocks tests', () => {
    test('makeArray empty array', () => {
       let block = makeArray(10, 20, 0);
@@ -40,6 +41,15 @@ describe('lines and blocks tests', () => {
       );
    });
 
+   test('move test, moving block piece one row down', () => {
+      let block = makeArray(10, 20, 0);
+      let piece = l;
+      block = setBlock(block, 5, 5, l);
 
+      console.log(piece.blocks);
+      move(block, piece, DIR.DOWN);
+      expect(block[6][5]).toStrictEqual({"blocks": [52224, 52224, 52224, 52224], "color": "yellow"}
+      );
+   })
 
 });
