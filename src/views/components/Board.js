@@ -5,6 +5,7 @@ import {setGameStatus} from "../../slices/statusSlice";
 import {DIR, KEY} from "../../classes/Piece_utils";
 import {useInterval} from "../../utils/useInterval";
 import {setScore} from "../../slices/roomSlice";
+import Chat from "./Chat";
 
 //Render the board, and the piece above the board.
 //rotate, move left, move right update the piece, not the board.
@@ -14,16 +15,34 @@ function bit_test(num, bit) {
     return ((1 << bit) & (num & 0xFFFF));
 }
 
+// TODO add level variable
+const computeRemovedLinesScore = (removedLines) => {
+    let score = 0;
+    switch (removedLines) {
+        case 0:
+            break;
+        case 1:
+            score = 40;
+            break;
+        case 2:
+            score = 100;
+            break;
+        case 3:
+            score = 300;
+            break;
+        default:
+            score = 1200;
+            break
+    }
+    return score;
+}
+
 const Board = () => {
     const {status, room} = useSelector((state) => state); //useless for now
     const [piece, setPiece] = useState(null);
     const [board, setBoard] = useState(makeArray(10, 20, 0));
 
     const dispatch = useDispatch();
-
-    /*const removeLine = (board) => {
-        return board //TODO remove line if there is line(s) to be removed
-    }*/
 
     const doDrop = () => { //Running every second, AND on key.Down pressed
         if (!piece || status._gameStatus !== 'placing') return
@@ -35,7 +54,8 @@ const Board = () => {
             ret = removeLines(dropPiece(tmp, piece));
             setPiece(null);
             setBoard(ret.board);
-            dispatch(setScore(room._score + ret.removedLines + 10));
+            //dispatch(setScore(room._score + ret.removedLines + 10));
+            dispatch(setScore(10 + room._score + computeRemovedLinesScore(ret.removedLines)))
             dispatch(setGameStatus({gameStatus: 'readyNext', board: board}));
             clearInterval(doDrop); //If the piece is placed, then wait for another
         } else {
@@ -94,8 +114,9 @@ const Board = () => {
     //Foreach rows and for each column of game._bord, display each cell
     return (
         <section id="board-section" tabIndex="0" onKeyDown={handleKey}>
-            <div className="col border border-dark" style={{width: '300px'}}>
-            {board.map((row, j) => {
+            <div className="col" style={{width: '300px'}}>
+                <div className="col border border-dark" style={{width: '300px'}}>
+                {board.map((row, j) => {
                 return ( //Don't remove the key attribute
                     <div key={j} className="row m-0" style={{width: '300px'}}>
                         {row.map((cell, i) => { //Drawing coordinates are reverted (y, x)
@@ -129,6 +150,15 @@ const Board = () => {
                     </div>
                 );
             })}
+                </div>
+                <div className="row d-flex mt-3">
+                    <div className="col d-flex align-content-center justify-content-center">
+                        <button className="btn btn-outline-dark me-1">left ←</button>
+                        <button className="btn btn-outline-dark me-1">right →</button>
+                        <button className="btn btn-outline-dark me-1">down ↓</button>
+                        <button className="btn btn-outline-dark me-1">rotate ↑</button>
+                    </div>
+                </div>
             </div>
         </section>
     );
