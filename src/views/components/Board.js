@@ -54,7 +54,6 @@ const Board = () => {
             ret = removeLines(dropPiece(tmp, piece));
             setPiece(null);
             setBoard(ret.board);
-            //dispatch(setScore(room._score + ret.removedLines + 10));
             dispatch(setScore(10 + room._score + computeRemovedLinesScore(ret.removedLines)))
             dispatch(setGameStatus({gameStatus: 'readyNext', board: board}));
             clearInterval(doDrop); //If the piece is placed, then wait for another
@@ -65,8 +64,6 @@ const Board = () => {
 
     const onClickMoveListener = (event) => {
         let keyCode;
-        console.log(keyCode);
-        console.log(event.target);
         switch (event.target.id) {
             case "left-button":
                 keyCode = KEY.LEFT;
