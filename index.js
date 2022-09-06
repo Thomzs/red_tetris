@@ -46,6 +46,12 @@ io.on("connection", async(socket) => {
                 if (_room !== null) { //null room means the player was last to leave, and the room is deleted.
                     let tmp = Object.assign(_room.players);
                     socket.to(_room.name).emit('updatePlayers', removeKeys(tmp, 'socket'));
+                    let player = players.find(p => p.socket.id === socket.id);
+                    if (player.admin && _room.players[0]) {
+                        let newAdmin = players.find(p => p.socket.id === _room.players[0]);
+                            newAdmin.admin = true;
+                            newAdmin.socket.emit('admin');
+                    }
                 }
                 players = players.filter(p => { return p.socket.id !== socket.id });
             })
@@ -70,7 +76,6 @@ io.on("connection", async(socket) => {
                         .then((piece) => {
                             io.to(_room.name).emit('newPiece', piece);
                             _room.countWaiting = _room.players.length;
-                            let tmp;
                         });
                 }
             })
@@ -86,11 +91,12 @@ io.of("/").adapter.on("join-room", (room, id) => {
     if (!player) return;
 
     _Room.joinRoom(rooms, room, player)
-        .then((_room) => {
-            let tmp = Object.assign({}, _room);
+        .then((ret) => {
+            let tmp = Object.assign({}, ret.room);
             tmp = removeKeys(tmp, 'socket'); //Socket object should be private,
-            player?.socket.emit('joinRoomOk', tmp);
+            player?.socket.emit('joinRoomOk', {room: tmp, admin: ret.admin});
             player?.socket.to(room).emit('newPlayer', removeKeys(player, 'socket'));
+            player.admin = ret.admin;
         })
         .catch(() => player?.socket.emit('joinError'));
 });
@@ -124,11 +130,6 @@ app.get('/createRoom', (req, res) => {
     _Room.createRoom(rooms, name, password, mode)
         .then((r) => res.send(r))
         .catch(() => res.send(JSON.stringify('ROOMNAME-TAKEN')));
-});
-
-app.get('/getPiece', (req, res) => {
-   //So here to send a piece: something like
-    //_Piece.getPiece().then(r => res.send(r)); because its asynchronous.
 });
 
 io.listen(3001);

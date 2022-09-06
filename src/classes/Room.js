@@ -69,7 +69,8 @@ class Room {
             for (let i = 0; i < rooms.length; i++) {
                 if (rooms[i].name === name) {
                     rooms[i].players.push(player);
-                    resolve(rooms[i]);
+                    let admin = rooms[i].players === 1;
+                    resolve({room: rooms[i], admin: admin});
                     return;
                 }
             }
