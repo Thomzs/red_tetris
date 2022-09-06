@@ -2,7 +2,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {Button, Container, Form, FormControl, Nav, Navbar} from "react-bootstrap";
 import {setUsername} from "../../slices/playerSlice";
 import {debounce} from "../../utils/debounce";
-import {setStatusHome} from "../../slices/statusSlice";
+import {setGameStatus, setStatusHome} from "../../slices/statusSlice";
+import {reset} from "../../slices/roomSlice";
 
 const NavBar = () => {
     const { player, }  = useSelector((state) => state);
@@ -16,7 +17,9 @@ const NavBar = () => {
     };
 
     const backHome = () => {
+        dispatch(setGameStatus({gameStatus: 'initial'}));
         dispatch(setStatusHome());
+        dispatch(reset());
     }
 
      const inputHandler = debounce((e) => updatePlayer(e), 250);

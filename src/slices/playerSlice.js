@@ -1,4 +1,5 @@
 import {createSlice} from "@reduxjs/toolkit";
+import {makeArray} from "../utils/piece";
 const { uniqueNamesGenerator, adjectives, names } = require('unique-names-generator');
 
 function bzeroMap() {
@@ -30,7 +31,7 @@ const playerSlice = createSlice( {
         _avatar: makeAvatar(username),
         _role: 0,
         _score: 0,
-        _map: bzeroMap(),
+        _map: makeArray(10, 20, 0),
         _error: null,
     },
     reducers: {
@@ -45,7 +46,7 @@ const playerSlice = createSlice( {
             state._error = action.payload.error;
         },
         resetMap: (state) => {
-            state._map = bzeroMap();
+            state._map = makeArray(10, 20, 0);
         }
     },
 });

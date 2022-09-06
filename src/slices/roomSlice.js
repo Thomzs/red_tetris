@@ -2,18 +2,21 @@ import {createSlice} from "@reduxjs/toolkit";
 import {v4 as uuidv4} from "uuid";
 import {Status} from "../utils/status";
 
+const initialState = {
+    _id: null,
+    _admin: false,
+    _chat: [],
+    _players: [],
+    _mode: 'classic',
+    _name: null,
+    _password: '',
+    _currentPiece: null,
+    _score: 0,
+}
+
 const roomSlice = createSlice({
     name: 'room',
-    initialState: {
-        _id: null,
-        _gameStatus: 'ReadyForNextPiece',
-        _admin: false,
-        _chat: [],
-        _players: [],
-        _mode: 'classic',
-        _name: null,
-        _password: ''
-    },
+    initialState: initialState,
     reducers: {
         setRoom: (state, action) => {
             state._id = action.payload.id;
@@ -33,7 +36,18 @@ const roomSlice = createSlice({
         },
         setPlayers: (state, action) => {
             state._players = action.payload;
-        }
+        },
+        setPiece: (state, action) => {
+            state._currentPiece = action.payload;
+        },
+        setScore: (state, action) => {
+            state._score = action.payload;
+        },
+        resetGame: (state) => {
+            state._score = 0;
+            state._currentPiece = null;
+        },
+        reset: () => initialState,
     },
 });
 
@@ -43,6 +57,10 @@ export const {
     addToChat,
     addPlayer,
     setPlayers,
+    setPiece,
+    setScore,
+    resetGame,
+    reset,
 } = roomSlice.actions;
 
 export default roomSlice.reducer;

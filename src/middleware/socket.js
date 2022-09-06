@@ -1,8 +1,9 @@
 import { io, Socket } from "socket.io-client";
 import {setConnected, setDisconnected, startConnecting} from "../slices/connectionSlice";
 import { setUsername } from "../slices/playerSlice";
-import {setStatusHome} from "../slices/statusSlice";
-import {addPlayer, setPlayers, setRoom} from "../slices/roomSlice";
+import {setGameStatus, setStatusGame, setStatusHome} from "../slices/statusSlice";
+import {addPlayer, setAdmin, setPiece, setPlayers, setRoom} from "../slices/roomSlice";
+import {DIR} from "../classes/Piece_utils";
 
 export const socketMiddleware = (store) => {
     let socket = Socket;
@@ -18,7 +19,8 @@ export const socketMiddleware = (store) => {
                 socket = io("http://localhost:3001");
             }
             socket.on('joinRoomOk', (data) => {
-                store.dispatch(setRoom(data));
+                store.dispatch(setRoom(data.room));
+                if (data.admin) store.dispatch(setAdmin(true));
                 store.dispatch(setConnected());
             });
 
@@ -36,8 +38,20 @@ export const socketMiddleware = (store) => {
 
             socket.on('updatePlayers', (data) => {
                 store.dispatch(setPlayers(data));
+            });
+
+            socket.on('newPiece', (data) => {
+                console.log(data);
+                store.dispatch(setPiece(data));
+            });
+
+            socket.on('admin', () => {
+                store.dispatch(setAdmin(true));
+                //socket.emit('message', {from: 'chat': 'xxx is now admin of the room'});
+                //store.dispatch(addToChat(from: 'chat', 'You are now admin of the room'));
             })
         }
+
         if (connected) {
 
             if (setUsername.match(action) && store.getState().status._status === 'GAME') {
@@ -49,6 +63,10 @@ export const socketMiddleware = (store) => {
             if (setStatusHome.match(action)) {
                 socket?.close();
                 store.dispatch(setDisconnected());
+            }
+
+            if (setGameStatus.match(action) && action.payload.gameStatus === 'readyNext') {
+                socket.emit('readyNext', {board: action.payload.board, room: store.getState().room._name}); //Tell server we are waiting for a tetrimino
             }
         }
     };

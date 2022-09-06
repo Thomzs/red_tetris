@@ -1,7 +1,7 @@
-import * as lib from "../utils/piece";
 const { game_board } = require("./Piece_utils.js");
 const { colors } = require("./Piece_utils.js");
 const { gamePieces } = require("./Piece_utils.js");
+const {DIR} = require("./Piece_utils");
 
 class Piece {
     /*getColor = () => {
@@ -12,8 +12,9 @@ class Piece {
 
     getPiece = () => {
         return new Promise((resolve, reject) => {
-            resolve(gamePieces[Math.floor(Math.random() * gamePieces.length)]);
-            });
+            let type = gamePieces[Math.floor(Math.random() * gamePieces.length)];
+            resolve({type: type, dir: DIR.UP, x: 2, y: 0});
+        });
     };
 
     /*play = () => {
