@@ -22,7 +22,7 @@ let players = [];
 let rooms = [];
 
 //just for dev purposes
-rooms.push({id: uuidv4(), name: 'La room 1', password: 'abcde', private: true, players: [], mode: 'classic', status: Status.InGame, chat: []}, {id: uuidv4(), name: 'Wesh les bgs', password: '', private: false, players: [], mode: 'classic', status: Status.Lobby, chat: []});
+rooms.push({id: uuidv4(), name: 'La room 1', password: 'abcde', private: true, players: [], mode: 'classic', status: Status.InGame, chat: [], countWaiting: 0}, {id: uuidv4(), name: 'Wesh les bgs', password: '', private: false, players: [], mode: 'classic', status: Status.Lobby, chat: [], countWaiting: 0});
 
 const io = new Server({
     cors: {
@@ -59,11 +59,22 @@ io.on("connection", async(socket) => {
             .catch(_ => socket.emit('joinError'))///Else joinError.
     });
 
-    socket.on('readyNext', () => {
-        _Piece.getPiece()
-            .then((piece) => {
-                socket.emit('newPiece', piece);
+    socket.on('readyNext', async (data) => {
+        _Room.updateBoard(rooms, data.room, socket.id, data.board)
+            .then((_room) => {
+                if (data.board !== null) {
+                    socket.to(_room.name).emit('updatePlayers', removeKeys(_room.players, 'socket'));
+                }
+                if (_room.countWaiting === 0) {
+                    _Piece.getPiece()
+                        .then((piece) => {
+                            io.to(_room.name).emit('newPiece', piece);
+                            _room.countWaiting = _room.players.length;
+                            let tmp;
+                        });
+                }
             })
+            .catch((reason => socket.emit('error', reason)));
     });
 });
 

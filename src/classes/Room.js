@@ -32,6 +32,7 @@ class Room {
                     players: [],
                     mode: mode,
                     status: Status.Lobby,
+                    countWaiting: 0,
                     chat: [],
                 };
                 rooms.push(newRoom);
@@ -90,6 +91,26 @@ class Room {
             }
             reject();
         });
+    }
+
+    updateBoard = (rooms, room, id, board) => {
+        return new Promise((resolve, reject) => {
+            for (let i = 0; i < rooms.length; i++) {
+                if (rooms[i].name === room) {
+                    for (let j = 0; j < rooms[i].players.length; j++) {
+                        if (rooms[i].players[j].socket.id === id) {
+                            rooms[i].players[j].board = board;
+                            if (rooms[i].countWaiting > 0) {
+                                rooms[i].countWaiting--;
+                            }
+                            resolve(rooms[i]);
+                            return;
+                        }
+                    }
+                }
+            }
+            reject('No such room');
+        })
     }
 }
 

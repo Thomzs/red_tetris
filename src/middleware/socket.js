@@ -59,7 +59,7 @@ export const socketMiddleware = (store) => {
             }
 
             if (setGameStatus.match(action) && action.payload.gameStatus === 'readyNext') {
-                socket.emit('readyNext', action.payload.board); //Tell server we are waiting for a tetrimino
+                socket.emit('readyNext', {board: action.payload.board, room: store.getState().room._name}); //Tell server we are waiting for a tetrimino
             }
         }
     };
