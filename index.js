@@ -48,7 +48,7 @@ io.on("connection", async(socket) => {
                     socket.to(_room.name).emit('updatePlayers', removeKeys(tmp, 'socket'));
                     let player = players.find(p => p.socket.id === socket.id);
                     if (player.admin && _room.players[0]) {
-                        let newAdmin = players.find(p => p.socket.id === _room.players[0]);
+                        let newAdmin = players.find(p => p.socket.id === _room.players[0].socket.id);
                             newAdmin.admin = true;
                             newAdmin.socket.emit('admin');
                     }

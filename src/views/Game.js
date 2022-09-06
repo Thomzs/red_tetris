@@ -30,7 +30,7 @@ const Game = () => {
                 <div className="col-8 border-end d-flex justify-content-center p-0">
                     <div className="row w-100">
                         <div className="col d-flex align-self-center justify-content-center">
-                            <button className="btn btn-outline-dark mt-4" onClick={startGame}>Start Game</button>
+                            <button className="btn btn-outline-dark mt-4" onClick={startGame} disabled={!room._admin}>Start Game</button>
                         </div>
                         <div className="col-4 p-0 align-self-center">
                             <div className="row justify-content-center">

@@ -69,7 +69,7 @@ class Room {
             for (let i = 0; i < rooms.length; i++) {
                 if (rooms[i].name === name) {
                     rooms[i].players.push(player);
-                    let admin = rooms[i].players === 1;
+                    let admin = (rooms[i].players.length === 1);
                     resolve({room: rooms[i], admin: admin});
                     return;
                 }
@@ -84,6 +84,9 @@ class Room {
                 for (let j = 0; j < rooms[i].players.length; j++) {
                     if (rooms[i].players[j].socket.id === socketId) {
                         rooms[i].players.splice(j, 1);
+                        if (rooms[i].countWaiting > 0) {
+                            rooms[i].countWaiting--;
+                        }
                         //TODO If room empty, delete room from rooms & resolve null
                         resolve(rooms[i]);
                         return;
