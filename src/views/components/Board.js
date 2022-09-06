@@ -105,6 +105,8 @@ const Board = () => {
             default:
                 break;
         }
+
+        document.getElementById('board').focus();
     };
 
     useEffect(() => {
@@ -133,9 +135,9 @@ const Board = () => {
 
     //Foreach rows and for each column of game._bord, display each cell
     return (
-        <section id="board-section" tabIndex="0" onKeyDown={handleKey}>
-            <div className="col" style={{width: '300px'}}>
-                <div className="col border border-dark" style={{width: '300px'}}>
+        <section id="board-section">
+            <div className="col">
+                <div className="col border border-dark justify-content-center" id='board' style={{width: '300px',  outline: 'none'}} tabIndex="0" onKeyDown={handleKey}>
                 {board.map((row, j) => {
                 return ( //Don't remove the key attribute
                     <div key={j} className="row m-0" style={{width: '300px'}}>

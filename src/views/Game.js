@@ -16,6 +16,7 @@ const Game = () => {
     const startGame = () => {
         if (status._gameStatus === 'initial') {
             dispatch(setGameStatus({gameStatus: 'readyNext', board: null}));
+            document.getElementById('board').focus();
         } else {
             dispatch(resetGame());
             dispatch(setGameStatus({gameStatus: 'initial'}));
