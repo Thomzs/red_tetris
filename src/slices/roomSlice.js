@@ -12,6 +12,8 @@ const initialState = {
     _password: '',
     _currentPiece: null,
     _score: 0,
+    _won: false,
+    _countLost: 0,
 }
 
 const roomSlice = createSlice({
@@ -37,15 +39,29 @@ const roomSlice = createSlice({
         setPlayers: (state, action) => {
             state._players = action.payload;
         },
+        removePlayer: (state, action) => {
+            state._players.filter((p) => p.id !== action.payload);
+        },
         setPiece: (state, action) => {
             state._currentPiece = action.payload;
         },
         setScore: (state, action) => {
             state._score = action.payload;
         },
+        setWin: (state) => {
+            state._win = true;
+        },
+        playerLost: (state, action) => {
+            let player = state._players.findIndex((p) => p.id === action.payload);
+
+            state._players[player].loose = true;
+            state._countLost++;
+        },
         resetGame: (state) => {
             state._score = 0;
             state._currentPiece = null;
+            state._won = false;
+            state._countLost = 0;
         },
         reset: () => initialState,
     },
@@ -59,6 +75,9 @@ export const {
     setPlayers,
     setPiece,
     setScore,
+    setWin,
+    removePlayer,
+    playerLost,
     resetGame,
     reset,
 } = roomSlice.actions;
