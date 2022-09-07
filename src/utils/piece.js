@@ -131,7 +131,7 @@ export function eachBlock(blocks, type, x, y, dir, fn) {
 
 // Checks if any of the required blocks to place the next piece are occupied or not
 export function occupied(blocks, type, x, y, dir) {
-    let result = false
+    let result = false;
     eachBlock(blocks, type, x, y, dir, function(blocks, x, y) {
         if ((x < 0 || x >= sizeX) || (y < 0 || y >= sizeY) || getBlock(blocks, x, y))
             result = true;

@@ -1,6 +1,8 @@
-import { checkSingleLine, getBlock, makeArray, move, setBlock, eachBlock, unoccupied,
-         occupied} from "./piece";
-import { l, DIR } from "../classes/Piece_utils";
+import {
+   checkSingleLine, getBlock, makeArray, move, setBlock, eachBlock, unoccupied,
+   occupied, dropPiece, rotate
+} from "./piece";
+import { l, j, DIR } from "../classes/Piece_utils";
 
 
 describe('lines and blocks tests', () => {
@@ -16,11 +18,11 @@ describe('lines and blocks tests', () => {
       expect(emptyArray).toBe(true);
    });
 
-   test('checks a empty line -> should be false', () => {
+   test('checkSingleLine a empty line -> should be false', () => {
       expect(checkSingleLine([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])).toBe(false);
    });
 
-   test('checks a full line -> should be true', () => {
+   test('checkSingleLine a full line -> should be true', () => {
       expect(checkSingleLine([1, 1, 1, 1, 1, 1, 1, 1, 1, 1])).toBe(true);
    });
 
@@ -41,15 +43,57 @@ describe('lines and blocks tests', () => {
       );
    });
 
-   test('move test, moving block piece one row down', () => {
+   test('occupied test for an empty area', () => {
+      let block = makeArray(10, 20, 0);
+      let piece = l;
+      expect(occupied(block, l, 5, 5, 2)).toBe(false);
+   });
+
+   test('occupied test for an occupied area', () => {
+      let block = makeArray(10, 20, 0);
+      let piece = l;
+      block = setBlock(block, 5, 5, piece);
+      expect(occupied(block, l, 5, 5, 2)).toBe(true);
+   });
+
+   test('unoccupied test for an empty area', () => {
+      let block = makeArray(10, 20, 0);
+      let piece = l;
+      expect(unoccupied(block, piece, 5, 5, 2)).toBe(true);
+   });
+
+   test('unoccupied test for an occupied area', () => {
+      let block = makeArray(10, 20, 0);
+      let piece = l;
+      block = setBlock(block, 5, 5, piece);
+      expect(unoccupied(block, piece, 5, 5, 2)).toBe(false);
+   });
+
+   /*test('rotate from DIR 2 to DIR 3 unoccupied', () => {
+      let block = makeArray(10, 20, 0);
+      let piece = j;
+      piece.DIR = 2;
+      block = setBlock(block, 5, 5, piece);
+      piece = rotate(block, piece);
+      expect(piece.DIR).toBe(3);
+   });*/
+
+   /*test('dropPiece test', () => {
+      let block = makeArray(10, 20, 0);
+      let piece = l;
+      block = setBlock(block, 5, 5, piece);
+      dropPiece(block, piece);
+      expect(block[6][5]).toStrictEqual({"blocks": [52224, 52224, 52224, 52224], "color": "yellow"});
+   });*/
+
+   /*test('move test, moving block piece one row down', () => {
       let block = makeArray(10, 20, 0);
       let piece = l;
       block = setBlock(block, 5, 5, l);
 
-      console.log(piece.blocks);
       move(block, piece, DIR.DOWN);
       expect(block[6][5]).toStrictEqual({"blocks": [52224, 52224, 52224, 52224], "color": "yellow"}
       );
-   })
+   })*/
 
 });
