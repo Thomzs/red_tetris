@@ -55,7 +55,6 @@ const Board = () => {
             setPiece(null);
             setBoard(ret.board);
             dispatch(setScore(10 + room._score + computeRemovedLinesScore(ret.removedLines)))
-            dispatch(setGameStatus({gameStatus: 'readyNext', board: board}));
             clearInterval(doDrop); //If the piece is placed, then wait for another
         } else {
             setPiece(ret);
@@ -63,6 +62,8 @@ const Board = () => {
     };
 
     const onClickMoveListener = (event) => {
+        if (!piece || status._gameStatus !== 'placing') return
+
         let keyCode;
         switch (event.target.id) {
             case "left-button":
@@ -106,7 +107,7 @@ const Board = () => {
                 break;
         }
 
-        document.getElementById('board').focus();
+        document.getElementById('tetris').focus();
     };
 
     useEffect(() => {
@@ -117,19 +118,29 @@ const Board = () => {
     }, [status._gameStatus]);
 
     useEffect(() => {
-        if (piece === null || piece === undefined || status.gameStatus === 'placing') return;
-
-        dispatch(setGameStatus({gameStatus:'placing'}));
-        if (occupied(board, piece.type, piece.x, piece.y, piece.dir)) { //Checking if the new piece can be dropped
-            loose(); //if not Loose;
-            dispatch(setGameStatus({gameStatus: 'loose', board: board}));
+        if (status._gameStatus !== 'initial') {
+            dispatch(setGameStatus({gameStatus: 'readyNext', board: board}));
         }
-    }, [piece]);
+    }, [board]);
 
     useEffect(() => {
-        if (room._currentPiece !== null)
+        if (room._currentPiece !== null && status._gameStatus !== 'loose') {
             setPiece(room._currentPiece);
+            dispatch(setGameStatus({gameStatus:'placing'}));
+            if (occupied(board, room._currentPiece.type, room._currentPiece.x, room._currentPiece.y, room._currentPiece.dir)) { //Checking if the new piece can be dropped
+                loose(); //if not Loose;
+                dispatch(setGameStatus({gameStatus: 'loose', board: board}));
+                setPiece(null);
+            }
+        }
     }, [room._currentPiece]);
+
+    useEffect(() => {
+        if (room._win) {
+            alert('You won');
+            setPiece(null);
+        }
+    }, [room._win]);
 
     useInterval(doDrop, 1000);
 
@@ -137,7 +148,7 @@ const Board = () => {
     return (
         <section id="board-section">
             <div className="col">
-                <div className="col border border-dark justify-content-center" id='board' style={{width: '300px',  outline: 'none'}} tabIndex="0" onKeyDown={handleKey}>
+                <div className="col border border-dark justify-content-center" id='tetris' style={{width: '300px',  outline: 'none'}} tabIndex="0" onKeyDown={handleKey}>
                 {board.map((row, j) => {
                 return ( //Don't remove the key attribute
                     <div key={j} className="row m-0" style={{width: '300px'}}>

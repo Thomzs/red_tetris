@@ -84,10 +84,12 @@ class Room {
                 for (let j = 0; j < rooms[i].players.length; j++) {
                     if (rooms[i].players[j].socket.id === socketId) {
                         rooms[i].players.splice(j, 1);
-                        if (rooms[i].countWaiting > 0) {
+                        if (rooms[i].players.length === 0) {
+                            rooms.splice(i, 1);
+                            resolve(null);
+                        } else if (rooms[i].countWaiting > 0) {
                             rooms[i].countWaiting--;
                         }
-                        //TODO If room empty, delete room from rooms & resolve null
                         resolve(rooms[i]);
                         return;
                     }
@@ -115,6 +117,49 @@ class Room {
             }
             reject('No such room');
         })
+    }
+
+    setLoose = (rooms, name, id) => {
+        return new Promise((resolve) => {
+            let roomIndex = rooms.findIndex((room) => room.name === name);
+            let playerIndex = rooms[roomIndex].players.findIndex((player) => player.socket.id === id);
+
+            rooms[roomIndex].players[playerIndex].lost = true;
+            resolve(rooms[roomIndex].players);
+        });
+    }
+
+    getWinner = (rooms, name) => {
+        return new Promise((resolve, reject) => {
+            let roomIndex = rooms.findIndex((room) => room.name === name);
+            let winner = false;
+
+            for (let i = 0; i < rooms[roomIndex].players.length; i++) {
+                if (rooms[roomIndex].players[i].lost === false) {
+                    if (winner !== false) {
+                        reject();
+                        return;
+                    }
+                    winner = rooms[roomIndex].players[i];
+                }
+            }
+            if (winner !== false) {
+                resolve(winner);
+            } else {
+                reject();
+            }
+        });
+    }
+
+    resetLost = (rooms, name) => {
+        return new Promise((resolve) => {
+            let roomIndex = rooms.findIndex((room) => room.name === name);
+
+            for (let i = 0; i < rooms[roomIndex].players; i++) {
+                rooms[roomIndex].players[i] = false;
+            }
+            resolve(rooms[roomIndex]);
+        });
     }
 }
 
