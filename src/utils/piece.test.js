@@ -2,7 +2,7 @@ import {
    checkSingleLine, getBlock, makeArray, move, setBlock, eachBlock, unoccupied,
    occupied, dropPiece, rotate
 } from "./piece";
-import { l, j, DIR } from "../classes/Piece_utils";
+import { l, j, o, i, DIR } from "../classes/Piece_utils";
 
 
 describe('lines and blocks tests', () => {
@@ -78,22 +78,51 @@ describe('lines and blocks tests', () => {
       expect(piece.DIR).toBe(3);
    });*/
 
-   /*test('dropPiece test', () => {
+   test('dropPiece to unoccupied area', () => {
       let block = makeArray(10, 20, 0);
-      let piece = l;
+      let piece = {type: l, dir: DIR.DOWN, x: 5, y: 5};
       block = setBlock(block, 5, 5, piece);
       dropPiece(block, piece);
       expect(block[6][5]).toStrictEqual({"blocks": [52224, 52224, 52224, 52224], "color": "yellow"});
-   });*/
+   });
 
-   /*test('move test, moving block piece one row down', () => {
+   test("dropPiece to an occupied area", () => {
       let block = makeArray(10, 20, 0);
-      let piece = l;
-      block = setBlock(block, 5, 5, l);
+      let piece = {type: o, dir: DIR.UP, x: 5, y: 5};
+      let newPiece = {type: i, dir: DIR.RIGHT, x: 5, y: 6};
+      block = setBlock(block, 5, 5, piece);
+      block = setBlock(block, 6, 5, newPiece)
 
-      move(block, piece, DIR.DOWN);
-      expect(block[6][5]).toStrictEqual({"blocks": [52224, 52224, 52224, 52224], "color": "yellow"}
-      );
-   })*/
+      dropPiece(block, piece);
+      expect(block[6][5]).toStrictEqual({"blocks": [3168, 19584, 50688, 9792], "color": "red"});
+   });
 
+   test('move piece to the right', () => {
+      let block = makeArray(10, 20, 0);
+      let piece = {type: l, dir: DIR.DOWN, x: 5, y: 5};
+      block = setBlock(block, 5, 5, piece);
+      let ret = move(block, piece, DIR.RIGHT);
+      expect([ret.x, ret.y]).toStrictEqual([6, 5]);
+   });
+
+   test('move piece to the left', () => {
+      let block = makeArray(10, 20, 0);
+      let piece = {type: o, dir: DIR.UP, x: 5, y: 5};
+      block = setBlock(block, piece, 5, 5);
+      let ret = move(block, piece, DIR.LEFT);
+      expect([ret.x, ret.y]).toStrictEqual([4, 5]);
+   })
+
+   test('move piece down', () => {
+      let block = makeArray(10, 20, 0);
+      let piece = {type: o, dir: DIR.UP, x: 5, y: 5};
+      block = setBlock(block, piece, 5, 5);
+      let ret = move(block, piece, DIR.DOWN);
+      expect([ret.x, ret.y]).toStrictEqual([5, 6]);
+   });
+
+   //TODO rotate test with straight line, close to the border so it shouldn't
+   // be able to move
+
+   //TODO also rotate test but with a possible move
 });
