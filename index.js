@@ -22,7 +22,7 @@ let players = [];
 let rooms = [];
 
 //just for dev purposes
-rooms.push({id: uuidv4(), name: 'La room 1', password: 'abcde', private: true, players: [], mode: 'classic', status: Status.InGame, chat: []}, {id: uuidv4(), name: 'Wesh les bgs', password: '', private: false, players: [], mode: 'classic', status: Status.Lobby, chat: []});
+rooms.push({id: uuidv4(), name: 'La room 1', password: 'abcde', private: true, players: [], mode: 'classic', status: Status.InGame, chat: [], countWaiting: 0}, {id: uuidv4(), name: 'Wesh les bgs', password: '', private: false, players: [], mode: 'classic', status: Status.Lobby, chat: [], countWaiting: 0});
 
 const io = new Server({
     cors: {
@@ -46,6 +46,12 @@ io.on("connection", async(socket) => {
                 if (_room !== null) { //null room means the player was last to leave, and the room is deleted.
                     let tmp = Object.assign(_room.players);
                     socket.to(_room.name).emit('updatePlayers', removeKeys(tmp, 'socket'));
+                    let player = players.find(p => p.socket.id === socket.id);
+                    if (player.admin && _room.players[0]) {
+                        let newAdmin = players.find(p => p.socket.id === _room.players[0].socket.id);
+                            newAdmin.admin = true;
+                            newAdmin.socket.emit('admin');
+                    }
                 }
                 players = players.filter(p => { return p.socket.id !== socket.id });
             })
@@ -59,11 +65,21 @@ io.on("connection", async(socket) => {
             .catch(_ => socket.emit('joinError'))///Else joinError.
     });
 
-    socket.on('readyNext', () => {
-        _Piece.getPiece()
-            .then((piece) => {
-                socket.emit('newPiece', piece);
+    socket.on('readyNext', async (data) => {
+        _Room.updateBoard(rooms, data.room, socket.id, data.board)
+            .then((_room) => {
+                if (data.board !== null) {
+                    socket.to(_room.name).emit('updatePlayers', removeKeys(_room.players, 'socket'));
+                }
+                if (_room.countWaiting === 0) {
+                    _Piece.getPiece()
+                        .then((piece) => {
+                            io.to(_room.name).emit('newPiece', piece);
+                            _room.countWaiting = _room.players.length;
+                        });
+                }
             })
+            .catch((reason => socket.emit('error', reason)));
     });
 });
 
@@ -75,11 +91,12 @@ io.of("/").adapter.on("join-room", (room, id) => {
     if (!player) return;
 
     _Room.joinRoom(rooms, room, player)
-        .then((_room) => {
-            let tmp = Object.assign({}, _room);
+        .then((ret) => {
+            let tmp = Object.assign({}, ret.room);
             tmp = removeKeys(tmp, 'socket'); //Socket object should be private,
-            player?.socket.emit('joinRoomOk', tmp);
+            player?.socket.emit('joinRoomOk', {room: tmp, admin: ret.admin});
             player?.socket.to(room).emit('newPlayer', removeKeys(player, 'socket'));
+            player.admin = ret.admin;
         })
         .catch(() => player?.socket.emit('joinError'));
 });
@@ -113,11 +130,6 @@ app.get('/createRoom', (req, res) => {
     _Room.createRoom(rooms, name, password, mode)
         .then((r) => res.send(r))
         .catch(() => res.send(JSON.stringify('ROOMNAME-TAKEN')));
-});
-
-app.get('/getPiece', (req, res) => {
-   //So here to send a piece: something like
-    //_Piece.getPiece().then(r => res.send(r)); because its asynchronous.
 });
 
 io.listen(3001);

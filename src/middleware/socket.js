@@ -2,7 +2,7 @@ import { io, Socket } from "socket.io-client";
 import {setConnected, setDisconnected, startConnecting} from "../slices/connectionSlice";
 import { setUsername } from "../slices/playerSlice";
 import {setGameStatus, setStatusGame, setStatusHome} from "../slices/statusSlice";
-import {addPlayer, setPiece, setPlayers, setRoom} from "../slices/roomSlice";
+import {addPlayer, setAdmin, setPiece, setPlayers, setRoom} from "../slices/roomSlice";
 import {DIR} from "../classes/Piece_utils";
 
 export const socketMiddleware = (store) => {
@@ -19,7 +19,8 @@ export const socketMiddleware = (store) => {
                 socket = io("http://localhost:3001");
             }
             socket.on('joinRoomOk', (data) => {
-                store.dispatch(setRoom(data));
+                store.dispatch(setRoom(data.room));
+                if (data.admin) store.dispatch(setAdmin(true));
                 store.dispatch(setConnected());
             });
 
@@ -43,6 +44,12 @@ export const socketMiddleware = (store) => {
                 console.log(data);
                 store.dispatch(setPiece(data));
             });
+
+            socket.on('admin', () => {
+                store.dispatch(setAdmin(true));
+                //socket.emit('message', {from: 'chat': 'xxx is now admin of the room'});
+                //store.dispatch(addToChat(from: 'chat', 'You are now admin of the room'));
+            })
         }
 
         if (connected) {
@@ -59,7 +66,7 @@ export const socketMiddleware = (store) => {
             }
 
             if (setGameStatus.match(action) && action.payload.gameStatus === 'readyNext') {
-                socket.emit('readyNext', action.payload.board); //Tell server we are waiting for a tetrimino
+                socket.emit('readyNext', {board: action.payload.board, room: store.getState().room._name}); //Tell server we are waiting for a tetrimino
             }
         }
     };

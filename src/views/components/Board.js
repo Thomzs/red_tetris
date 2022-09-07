@@ -54,7 +54,6 @@ const Board = () => {
             ret = removeLines(dropPiece(tmp, piece));
             setPiece(null);
             setBoard(ret.board);
-            //dispatch(setScore(room._score + ret.removedLines + 10));
             dispatch(setScore(10 + room._score + computeRemovedLinesScore(ret.removedLines)))
             dispatch(setGameStatus({gameStatus: 'readyNext', board: board}));
             clearInterval(doDrop); //If the piece is placed, then wait for another
@@ -65,8 +64,6 @@ const Board = () => {
 
     const onClickMoveListener = (event) => {
         let keyCode;
-        console.log(keyCode);
-        console.log(event.target);
         switch (event.target.id) {
             case "left-button":
                 keyCode = KEY.LEFT;
@@ -108,6 +105,8 @@ const Board = () => {
             default:
                 break;
         }
+
+        document.getElementById('board').focus();
     };
 
     useEffect(() => {
@@ -136,9 +135,9 @@ const Board = () => {
 
     //Foreach rows and for each column of game._bord, display each cell
     return (
-        <section id="board-section" tabIndex="0" onKeyDown={handleKey}>
-            <div className="col" style={{width: '300px'}}>
-                <div className="col border border-dark" style={{width: '300px'}}>
+        <section id="board-section">
+            <div className="col">
+                <div className="col border border-dark justify-content-center" id='board' style={{width: '300px',  outline: 'none'}} tabIndex="0" onKeyDown={handleKey}>
                 {board.map((row, j) => {
                 return ( //Don't remove the key attribute
                     <div key={j} className="row m-0" style={{width: '300px'}}>

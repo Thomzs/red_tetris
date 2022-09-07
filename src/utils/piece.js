@@ -1,13 +1,4 @@
 const {DIR, speed, sizeY, sizeX} = require("../classes/Piece_utils");
-// const {nu} = require("../classes/Piece_utils");
-// const pieces = require("../classes/Piece_utils");
-// const i = require("../classes/Piece_utils");
-// const j = require("../classes/Piece_utils");
-// const k = require("../classes/Piece_utils");
-// const l = require("../classes/Piece_utils");
-// const m = require("../classes/Piece_utils");
-// const n = require("../classes/Piece_utils");
-// const o = require("../classes/Piece_utils");
 
 // Generate board game
 export function makeArray(w, h, val) {
@@ -24,103 +15,30 @@ export function makeArray(w, h, val) {
 let playing = false;
 let pieces = []; // List of generated pieces
 let dx, dy  = 20; // Pixel size of a single tetris block
-///let blocks  = makeArray(sizeX, sizeY, 0); // Game board
 let actions = []; // List of actions taken by the user
 let nextPiece; // Next piece to be generated
-//let currPiece; // Last piece generated, which is currently present in the board and falling
 let timer; // Game timer since start of the game
 let score = 0;
 let rows = 0; // Number of cleaned row
 let cumulativeCleanedRows = 0; // If multiple rows cleaned at onces, allows score calculation
 let nextStep; // How long before current piece drops by 1 row
-let invalid;
 
-// ---------- Setters and getters ---------- //
-
-function setScore(n) {
- //   score = n; invalidateScore();
-};
-
-function addScore(n) {
+export function addScore(n) {
     score = score + n;
 };
 
-function setRows(n) {
+export function setRows(n) {
     rows = n; nextStep = Math.max(speed.min, speed.start - (speed.decrement * rows));
- //   invalidateRows();
 };
 
-// function addRows(n) {
-//     setRows(rows + n);
-// };
-
-// Checks whether a (x, y) position is already occupied
-function getBlock(blocks, x, y) {
+export function getBlock(blocks, x, y) {
     return (blocks && blocks[y] ? blocks[y][x] : null);
 };
 
-function setBlock(blocks,y,x,type) {
-    console.log('x: ', x, '')
+export function setBlock(blocks,y,x,type) {
     blocks[x] = blocks[x] || []; blocks[x][y] = type;
- //   invalidate();
     return blocks;
 };
-
-// function setCurrentPiece(piece) {
-//     currPiece = piece || randomPiece(); invalidate();
-// };
-
-// function setNextPiece(piece) {
-//     nextStep = piece || randomPiece(); invalidateNext();
-// };
-
-// ----------------------------------------- //
-
-// function invalidate() {
-//     invalid.court  = true;
-// };
-//
-// function invalidateNext() {
-//     invalid.next   = true;
-// };
-//
-// function invalidateScore() {
-//     invalid.score  = true;
-// };
-//
-// function invalidateRows() {
-//     invalid.rows   = true;
-// };
-
-// export function keydown(ev) {
-//     switch(ev.keyCode) {
-//         case KEY.LEFT:   actions.push(DIR.LEFT);  break;
-//         case KEY.RIGHT:  actions.push(DIR.RIGHT); break;
-//         case KEY.UP:     actions.push(DIR.UP);    break;
-//         case KEY.DOWN:   actions.push(DIR.DOWN);  break;
-//         case KEY.ESC:    lose();                  break;
-//     }
-// };
-//
-// export function handle(action) {
-//     switch(action) {
-//         case DIR.LEFT:  move(DIR.LEFT);  break;
-//         case DIR.RIGHT: move(DIR.RIGHT); break;
-//         case DIR.UP:    rotate();        break;
-//         case DIR.DOWN:  drop();          break;
-//     }
-// };
-
-// export function update(idt) {
-//     if (playing) {
-//         handle(actions.shift());
-//         timer = timer + idt;
-//         if (timer > nextStep) {
-//             timer = timer - nextStep;
-//             drop();
-//         }
-//     }
-// };
 
 export function move(blocks, currPiece, dir) {
     let x = currPiece.x, y = currPiece.y;
@@ -133,7 +51,6 @@ export function move(blocks, currPiece, dir) {
         let tmp = {...currPiece};
         tmp.x = x;
         tmp.y = y;
-     //   invalidate();
         return tmp;
     }
     else {
@@ -147,27 +64,14 @@ export function loose() {
     alert("GAME OVER");
 }
 
-// export function drop(blocks, currPiece) {
-//     if (!move(DIR.DOWN)) {
-//         addScore(10);
-//         blocks = dropPiece(blocks);
-//         //removeLines(); TODO implement removeLines function
-//         // setCurrentPiece(nextPiece);
-//         // setNextPiece(randomPiece());
-//         if (occupied(blocks, currPiece.type, currPiece.x, currPiece.y, currPiece.dir)) {
-//             lose();
-//         }
-//     }
-// };
-
-function checkSingleLine(line) {
+export function checkSingleLine(line) {
     for (let i = 0; i <= 9; i++) {
         if (line[i] === 0) {
             return false;
         }
     }
     return true;
-}
+};
 
 export function removeLines(blocks) {
     let removedLines = 0;
@@ -230,7 +134,6 @@ export function occupied(blocks, type, x, y, dir) {
     let result = false
     eachBlock(blocks, type, x, y, dir, function(blocks, x, y) {
         if ((x < 0 || x >= sizeX) || (y < 0 || y >= sizeY) || getBlock(blocks, x, y))
-        //if ((x < 0) || (x >= sizeX) || (y < 0) || (y >= sizeY) || getBlock(blocks, x,y))
             result = true;
     });
     return (result);
@@ -241,3 +144,5 @@ export function unoccupied(blocks, type, x, y, dir) {
     return !occupied(blocks, type, x, y, dir);
 };
 
+//module.exports = {occupied, unoccupied, checkSingleLine, removeLines, dropPiece, eachBlock, makeArray, move, loose,
+                    //getBlock, addScore};

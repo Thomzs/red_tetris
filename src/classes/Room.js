@@ -32,6 +32,7 @@ class Room {
                     players: [],
                     mode: mode,
                     status: Status.Lobby,
+                    countWaiting: 0,
                     chat: [],
                 };
                 rooms.push(newRoom);
@@ -68,7 +69,8 @@ class Room {
             for (let i = 0; i < rooms.length; i++) {
                 if (rooms[i].name === name) {
                     rooms[i].players.push(player);
-                    resolve(rooms[i]);
+                    let admin = (rooms[i].players.length === 1);
+                    resolve({room: rooms[i], admin: admin});
                     return;
                 }
             }
@@ -82,6 +84,9 @@ class Room {
                 for (let j = 0; j < rooms[i].players.length; j++) {
                     if (rooms[i].players[j].socket.id === socketId) {
                         rooms[i].players.splice(j, 1);
+                        if (rooms[i].countWaiting > 0) {
+                            rooms[i].countWaiting--;
+                        }
                         //TODO If room empty, delete room from rooms & resolve null
                         resolve(rooms[i]);
                         return;
@@ -90,6 +95,26 @@ class Room {
             }
             reject();
         });
+    }
+
+    updateBoard = (rooms, room, id, board) => {
+        return new Promise((resolve, reject) => {
+            for (let i = 0; i < rooms.length; i++) {
+                if (rooms[i].name === room) {
+                    for (let j = 0; j < rooms[i].players.length; j++) {
+                        if (rooms[i].players[j].socket.id === id) {
+                            rooms[i].players[j].board = board;
+                            if (rooms[i].countWaiting > 0) {
+                                rooms[i].countWaiting--;
+                            }
+                            resolve(rooms[i]);
+                            return;
+                        }
+                    }
+                }
+            }
+            reject('No such room');
+        })
     }
 }
 
