@@ -16,7 +16,7 @@ function bit_test(num, bit) {
 }
 
 // TODO add level variable
-const computeRemovedLinesScore = (removedLines) => {
+export const computeRemovedLinesScore = (removedLines) => {
     let score = 0;
     switch (removedLines) {
         case 0:
@@ -186,4 +186,5 @@ const Board = () => {
     );
 }
 
-export default Board;
+module.exports = {Board, computeRemovedLinesScore};
+//export default {Board, computeRemovedLinesScore};
