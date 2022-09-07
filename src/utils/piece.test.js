@@ -121,8 +121,20 @@ describe('lines and blocks tests', () => {
       expect([ret.x, ret.y]).toStrictEqual([5, 6]);
    });
 
-   //TODO rotate test with straight line, close to the border so it shouldn't
-   // be able to move
+   test('rotate straight line with unoccupied space', () => {
+      let block = makeArray(10, 20, 0);
+      let piece = {type: i, dir: DIR.DOWN, x: 5, y: 5};
+      block = setBlock(block, piece, 5, 5);
+      let ret = rotate(block, piece);
+      expect(ret.dir).toBe(3);
+   });
 
-   //TODO also rotate test but with a possible move
+   test('rotate straight line with occupied space because of border', () => {
+      let block = makeArray(10, 20, 0);
+      let piece = {type: i, dir: DIR.DOWN, x: 9, y: 5};
+      block = setBlock(block, piece, piece.x, piece.y);
+      let ret = rotate(block, piece);
+      expect(ret.dir).toBe(2); //means the direction is the same
+   });
+
 });
