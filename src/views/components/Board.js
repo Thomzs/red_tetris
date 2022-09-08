@@ -197,5 +197,6 @@ const Board = () => {
     );
 }
 
-module.exports = {Board, computeRemovedLinesScore};
+//module.exports = {Board, computeRemovedLinesScore};
 //export default {Board, computeRemovedLinesScore};
+export default Board;
