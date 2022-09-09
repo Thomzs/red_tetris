@@ -51,6 +51,9 @@ io.on("connection", async(socket) => {
                     let tmp = Object.assign(_room.players);
                     socket.to(_room.name).emit('updatePlayers', removeKeys(tmp, 'socket')); //REMOVE PLAYER WITH ID
                     let index = players.findIndex(p => p.socket.id === socket.id);
+
+                    io.to(_room.name).emit('newChat', {from: 'system', text: `${players[index]._username} has left the room`});
+
                     if (players[index].admin && _room.players[0]) {
                         let newAdmin = players.findIndex(p => p.socket.id === _room.players[0].socket.id);
                         players[newAdmin].admin = true;
@@ -118,6 +121,11 @@ io.on("connection", async(socket) => {
             })
             .catch(r => console.log(r));
     });
+
+    //Just broadcast messages
+    socket.on('chat', (data) => {
+        socket.to(data.room).emit('newChat', data.message);
+    })
 });
 
 //User has joiner a room. Keep tracks of the room he is in.
@@ -134,8 +142,9 @@ io.of("/").adapter.on("join-room", (room, id) => {
         .then((ret) => {
             let tmp = Object.assign({}, ret.room);
             tmp = removeKeys(tmp, 'socket'); //Socket object should be private,
-            player?.socket.emit('joinRoomOk', {room: tmp, admin: ret.admin, id: player.id});
+            player?.socket.emit('joinRoomOk', {room: tmp, admin: ret.admin, id: player._id});
             player?.socket.to(room).emit('newPlayer', removeKeys(player, 'socket'));
+            io.to(room).emit('newChat', {from: 'system', text: `${player._username} has joined the room`, key: 'join', playerId: player._id});
             player.admin = ret.admin;
         })
         .catch(() => player?.socket.emit('joinError'));

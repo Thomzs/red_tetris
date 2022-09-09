@@ -43,8 +43,8 @@ const BoardList = () => {
                 <div className="d-flex justify-content-center">
                     <div className="col position-absolute">
                     {_players.map((_player, index) => {
-                        if (_player.id === _id)
-                            return <></>;
+                        if (_player._id === _id)
+                            return false;
                         return (
                             <div key={index} className="mt-2 mb-4">
                                 <SmallBoard map={_player._map}/>

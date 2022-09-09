@@ -11,7 +11,7 @@ import {
     playerLost,
     resetGame,
     reset,
-    setWin
+    setWin, addToChat, sendChat
 } from "../slices/roomSlice";
 
 export const socketMiddleware = (store) => {
@@ -61,8 +61,7 @@ export const socketMiddleware = (store) => {
             socket.on('admin', () => {
                 store.dispatch(setAdmin(true));
                 //TODO
-                //socket.emit('message', {from: 'chat': 'xxx is now admin of the room'});
-                //store.dispatch(addToChat(from: 'chat', 'You are now admin of the room'));
+                //store.dispatch(sendChat(from: 'chat', 'You are now admin of the room'));
             });
 
             socket.on('winner', () => {
@@ -75,6 +74,10 @@ export const socketMiddleware = (store) => {
                 store.dispatch(setPlayers(data));
                 store.dispatch(setGameStatus({gameStatus:'initial'}));
             });
+
+            socket.on('newChat', (data) => {
+                store.dispatch(addToChat(data));
+            })
 
         }
 
@@ -96,6 +99,10 @@ export const socketMiddleware = (store) => {
             } else if (setGameStatus.match(action) && action.payload.gameStatus === 'loose') {
                 socket.emit('loose', {room: store.getState().room._name});
                 socket.emit('readyNext', {board: action.payload.board, room: store.getState().room._name});
+            }
+
+            if (sendChat.match(action)) {
+                socket.emit('chat', {message: action.payload, room: store.getState().room._name});
             }
         }
     };

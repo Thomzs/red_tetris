@@ -28,7 +28,7 @@ const Game = () => {
     return (
         <section className="container-fluid h-100">
             <div className="row d-flex h-100">
-                <div className="col-8 border-end d-flex justify-content-center p-0">
+                <div className="col-8 d-flex justify-content-center p-0">
                     <div className="row w-100">
                         <div className="col d-flex align-self-center justify-content-center">
                             <button className="btn btn-outline-dark mt-4" onClick={startGame} disabled={!room._admin}>Start Game</button>
@@ -45,12 +45,12 @@ const Game = () => {
                         </div>
                     </div>
                 </div>
-                <div className="col-4 bg-light p-0">
+                <div className="col-4 bg-light p-0 sideBar">
                     <div className="d-flex flex-column w-100 h-100">
                         <Container fluid className="w-100 h-50 p-0">
                             <BoardList />
                         </Container>
-                        <Container fluid className="w-100 h-50 p-0 border-top">
+                        <Container fluid className="w-100 h-50 p-0 border-top border-dark">
                             <Chat />
                         </Container>
                     </div>

@@ -33,6 +33,9 @@ const roomSlice = createSlice({
         addToChat: (state, action) => {
             state._chat.push(action.payload);
         },
+        sendChat: (state, action) => {
+            state._chat.push(action.payload);
+        },
         addPlayer: (state, action) => {
             state._players.push(action.payload);
         },
@@ -77,6 +80,7 @@ export const {
     setScore,
     setWin,
     removePlayer,
+    sendChat,
     playerLost,
     resetGame,
     reset,
