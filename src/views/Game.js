@@ -6,6 +6,7 @@ import {Container} from "react-bootstrap";
 import Board from "./components/Board";
 import {setGameStatus, setStatusGame} from "../slices/statusSlice";
 import {resetGame} from "../slices/roomSlice";
+import BoardList from "./components/BoardList";
 
 //TODO if not connected go connect
 
@@ -46,8 +47,8 @@ const Game = () => {
                 </div>
                 <div className="col-4 bg-light p-0">
                     <div className="d-flex flex-column w-100 h-100">
-                        <Container fluid className="h-50">
-                            <h4>Boards</h4>
+                        <Container fluid className="w-100 h-50 p-0">
+                            <BoardList />
                         </Container>
                         <Container fluid className="w-100 h-50 p-0 border-top">
                             <Chat />

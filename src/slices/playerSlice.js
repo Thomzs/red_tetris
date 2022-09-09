@@ -27,6 +27,7 @@ const username = makeUsername();
 const playerSlice = createSlice( {
     name: "player",
     initialState: {
+        _id: null,
         _username: username,
         _avatar: makeAvatar(username),
         _role: 0,
@@ -47,7 +48,10 @@ const playerSlice = createSlice( {
         },
         resetMap: (state) => {
             state._map = makeArray(10, 20, 0);
-        }
+        },
+        setId: (state, action) => {
+            state._id = action.payload;
+        },
     },
 });
 
@@ -55,7 +59,8 @@ export const {
     setUsername,
     setRole,
     setError,
-    resetMap
+    resetMap,
+    setId,
 } = playerSlice.actions;
 
 export default playerSlice.reducer;

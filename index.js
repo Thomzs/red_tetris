@@ -134,7 +134,7 @@ io.of("/").adapter.on("join-room", (room, id) => {
         .then((ret) => {
             let tmp = Object.assign({}, ret.room);
             tmp = removeKeys(tmp, 'socket'); //Socket object should be private,
-            player?.socket.emit('joinRoomOk', {room: tmp, admin: ret.admin});
+            player?.socket.emit('joinRoomOk', {room: tmp, admin: ret.admin, id: player.id});
             player?.socket.to(room).emit('newPlayer', removeKeys(player, 'socket'));
             player.admin = ret.admin;
         })

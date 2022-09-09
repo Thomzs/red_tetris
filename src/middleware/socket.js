@@ -1,6 +1,6 @@
 import { io, Socket } from "socket.io-client";
 import {setConnected, setDisconnected, startConnecting} from "../slices/connectionSlice";
-import { setUsername } from "../slices/playerSlice";
+import {setId, setUsername} from "../slices/playerSlice";
 import {setGameStatus, setStatusGame, setStatusHome} from "../slices/statusSlice";
 import {
     addPlayer,
@@ -31,6 +31,7 @@ export const socketMiddleware = (store) => {
                 store.dispatch(setRoom(data.room));
                 if (data.admin) store.dispatch(setAdmin(true));
                 store.dispatch(setConnected());
+                store.dispatch(setId(data.id));
             });
 
             socket.on("connect", () => {
