@@ -60,8 +60,7 @@ export const socketMiddleware = (store) => {
 
             socket.on('admin', () => {
                 store.dispatch(setAdmin(true));
-                //TODO
-                //store.dispatch(sendChat(from: 'chat', 'You are now admin of the room'));
+                store.dispatch(sendChat({from: 'system', text: `${store.getState().player._username} is now the admin of the room`, key: 'admin', playerId: store.getState().player._id}));
             });
 
             socket.on('winner', () => {
