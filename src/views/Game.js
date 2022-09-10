@@ -14,7 +14,7 @@ import {debounce} from "../utils/debounce";
 //TODO if not connected go connect
 
 const Game = () => {
-    const { room, status} = useSelector((state) => state); //useless for now
+    const { room, status, player} = useSelector((state) => state); //useless for now
 
     const dispatch = useDispatch(); //react stuff
 
@@ -31,6 +31,15 @@ const Game = () => {
     const splitChange = debounce((event) => {
         localStorage.setItem('splitPos', event[0]);
     }, 300);
+
+    useState(() => {
+        let pass = "";
+        if (room._password.length > 1) {
+            pass = `?password=${room._password}`;
+        }
+        // eslint-disable-next-line no-restricted-globals
+        history.replaceState(null, 'Tetris', `/#${room._name}[${player._username}]${pass}`);
+    });
 
     return (
         <section className="container-fluid h-100">

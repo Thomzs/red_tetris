@@ -14,6 +14,7 @@ const initialState = {
     _score: 0,
     _won: false,
     _countLost: 0,
+    _malus: 0,
 }
 
 const roomSlice = createSlice({
@@ -54,6 +55,9 @@ const roomSlice = createSlice({
         setWin: (state) => {
             state._win = true;
         },
+        setMalus: (state, action) => {
+            state._malus = action.payload;
+        },
         playerLost: (state, action) => {
             let player = state._players.findIndex((p) => p.id === action.payload);
 
@@ -65,6 +69,7 @@ const roomSlice = createSlice({
             state._currentPiece = null;
             state._won = false;
             state._countLost = 0;
+            state._malus = 0;
         },
         reset: () => initialState,
     },
@@ -79,6 +84,7 @@ export const {
     setPiece,
     setScore,
     setWin,
+    setMalus,
     removePlayer,
     sendChat,
     playerLost,

@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useState} from "react";
-import {dropPiece, loose, makeArray, move, rotate, occupied, removeLines} from "../../utils/piece";
+import {dropPiece, makeArray, move, rotate, occupied, removeLines, addMalus} from "../../utils/piece";
 import {setGameStatus} from "../../slices/statusSlice";
 import {DIR, KEY} from "../../classes/Piece_utils";
 import {useInterval} from "../../utils/useInterval";
@@ -41,6 +41,7 @@ const Board = () => {
     const {status, room} = useSelector((state) => state); //useless for now
     const [piece, setPiece] = useState(null);
     const [board, setBoard] = useState(makeArray(10, 20, 0));
+    const [removed, setRemoved] = useState(0);
 
     const dispatch = useDispatch();
 
@@ -55,6 +56,7 @@ const Board = () => {
             setPiece(null);
             setBoard(ret.board);
             dispatch(setScore(10 + room._score + computeRemovedLinesScore(ret.removedLines)))
+            setRemoved(ret.removedLines);
             clearInterval(doDrop); //If the piece is placed, then wait for another
         } else {
             setPiece(ret);
@@ -110,6 +112,12 @@ const Board = () => {
         document.getElementById('tetris').focus();
     };
 
+    const lose = () => {
+        dispatch(setGameStatus({gameStatus: 'loose', board: board}));
+        setPiece(null);
+        alert('LOSE');
+    }
+
     useEffect(() => {
         if (status._gameStatus === 'initial') {
             setBoard(makeArray(10, 20, 0));
@@ -118,8 +126,8 @@ const Board = () => {
     }, [status._gameStatus]);
 
     useEffect(() => {
-        if (status._gameStatus !== 'initial') {
-            dispatch(setGameStatus({gameStatus: 'readyNext', board: board}));
+        if (status._gameStatus !== 'initial' && piece === null) {
+            dispatch(setGameStatus({gameStatus: 'readyNext', board: board, removedLines: removed}));
         }
     }, [board]);
 
@@ -128,12 +136,33 @@ const Board = () => {
             setPiece(room._currentPiece);
             dispatch(setGameStatus({gameStatus:'placing'}));
             if (occupied(board, room._currentPiece.type, room._currentPiece.x, room._currentPiece.y, room._currentPiece.dir)) { //Checking if the new piece can be dropped
-                loose(); //if not Loose;
-                dispatch(setGameStatus({gameStatus: 'loose', board: board}));
-                setPiece(null);
+                lose(); //if not Loose;
             }
         }
     }, [room._currentPiece]);
+
+    useEffect(() => {
+        if (room._malus === 0 || !['placing', 'readyNext'].includes(status._gameStatus)) return;
+
+        let tmp = addMalus(board, room._malus);
+        if (!tmp) {
+            console.log("lost1");
+            lose();
+        }
+        else {
+            setBoard(tmp);
+            if (piece !== null) {
+                let newPiece = {...piece};
+                newPiece.y -= room._malus;
+                if (newPiece.y < 0) newPiece.y = 0;
+                setPiece(newPiece);
+                if (occupied(board, piece.type, piece.x, piece.y, piece.dir)) { //Checking if the new piece can be dropped
+                    console.log("lost2: ", tmp);
+                    lose(); //if not Loose;
+                }
+            }
+        }
+    }, [room._malus]);
 
     useEffect(() => {
         if (room._win) {

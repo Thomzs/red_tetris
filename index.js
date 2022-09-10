@@ -93,6 +93,12 @@ io.on("connection", async(socket) => {
                             _room.countWaiting = _room.players.length;
                         });
                 }
+                console.log('removedLines: ', data.removedLines);
+                if (data.removedLines && data.removedLines > 1) {
+                    let toAdd = data.removedLines <= 4 ? data.removedLines - 1 : 3;
+                    console.log('sending malus: ', toAdd);
+                    socket.to(_room.name).emit('malus', toAdd);
+                }
             })
             .catch((reason => socket.emit('error', reason)));
     });
