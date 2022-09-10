@@ -15,8 +15,8 @@ function WhatToRender(props) {
     const status = props.status;
 
     if (status === 'INTRO') return <Intro />;
-    else if (status === 'HOME') return <div className="d-flex flex-column vh-100 vw-100"><NavBar /><Home /></div>;
-    else if (status === 'GAME') return <div className="d-flex flex-column vh-100 vw-100"><NavBar /><Game /></div>;
+    else if (status === 'HOME') return <div className="d-flex flex-column vh-100 vw-100 container-large"><NavBar /><Home /></div>;
+    else if (status === 'GAME') return <div className="d-flex flex-column vh-100 vw-100 container-large"><NavBar /><Game /></div>;
 }
 
 function App() {

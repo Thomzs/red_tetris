@@ -50,14 +50,15 @@ const Game = () => {
                             <button className="btn btn-outline-dark mt-4" onClick={startGame} disabled={!room._admin}>Start Game</button>
                         </div>
                         <div className="col-4 p-0 align-self-center">
-                            <div className="row justify-content-center">
-                                <div className="d-flex justify-content-center">
-                                    <Board />
-                                </div>
-                            </div>
+                            <Board />
                         </div>
                         <div className="col d-flex align-self-center justify-content-center">
-                            <p style={{color: 'red', fontSize: '3rem'}}>{room._score}</p>
+                            <div className="row d-flex justify-content-center">
+                                <div>
+                                <p style={{color: 'red', fontSize: '3rem'}}>{room._score}</p>
+                                <p style={{color: 'red', fontSize: '3rem'}}>Level {room._level}</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

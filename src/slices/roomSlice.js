@@ -1,6 +1,4 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {v4 as uuidv4} from "uuid";
-import {Status} from "../utils/status";
 
 const initialState = {
     _id: null,
@@ -15,6 +13,8 @@ const initialState = {
     _won: false,
     _countLost: 0,
     _malus: 0,
+    _countRemoved: 0,
+    _level: 0,
 }
 
 const roomSlice = createSlice({
@@ -64,12 +64,24 @@ const roomSlice = createSlice({
             state._players[player].loose = true;
             state._countLost++;
         },
+        setCountRemoved: (state, action) => {
+            state._countRemoved = action.payload;
+        },
+        setLevel: (state, action) => {
+            state._level = action.payload;
+        },
+        setLevelAndCountRemoved: (state, action) => {
+            state._level = action.payload.level;
+            state._countRemoved = action.payload.countRemoved;
+        },
         resetGame: (state) => {
             state._score = 0;
             state._currentPiece = null;
             state._won = false;
             state._countLost = 0;
             state._malus = 0;
+            state._countRemoved = 0;
+            state._level = 0;
         },
         reset: () => initialState,
     },
@@ -88,6 +100,9 @@ export const {
     removePlayer,
     sendChat,
     playerLost,
+    setCountRemoved,
+    setLevel,
+    setLevelAndCountRemoved,
     resetGame,
     reset,
 } = roomSlice.actions;
