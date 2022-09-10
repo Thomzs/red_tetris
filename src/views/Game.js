@@ -7,6 +7,9 @@ import Board from "./components/Board";
 import {setGameStatus, setStatusGame} from "../slices/statusSlice";
 import {resetGame} from "../slices/roomSlice";
 import BoardList from "./components/BoardList";
+import {Allotment} from "allotment";
+import "allotment/dist/style.css";
+import {debounce} from "../utils/debounce";
 
 //TODO if not connected go connect
 
@@ -24,6 +27,10 @@ const Game = () => {
             dispatch(setGameStatus({gameStatus: 'initial'}));
         }
     }
+
+    const splitChange = debounce((event) => {
+        localStorage.setItem('splitPos', event[0]);
+    }, 300);
 
     return (
         <section className="container-fluid h-100">
@@ -47,12 +54,21 @@ const Game = () => {
                 </div>
                 <div className="col-4 bg-light p-0 sideBar">
                     <div className="d-flex flex-column w-100 h-100">
-                        <Container fluid className="w-100 h-50 p-0">
-                            <BoardList />
-                        </Container>
-                        <Container fluid className="w-100 h-50 p-0 border-top border-dark">
-                            <Chat />
-                        </Container>
+                            <Allotment vertical={true} onChange={splitChange} className="h-100 w-100">
+                                <Allotment.Pane minSize={10} preferredSize={parseInt(localStorage.getItem('splitPos'), 10) ?? "50%"}>
+                                    <BoardList />
+                                </Allotment.Pane>
+                                <Allotment.Pane className="chatPane">
+                                    <Chat />
+                                </Allotment.Pane>
+                            </Allotment>
+
+                        {/*<Container fluid className="w-100 h-50 p-0">*/}
+                        {/*    <BoardList />*/}
+                        {/*</Container>*/}
+                        {/*<Container fluid className="w-100 h-50 p-0 border-top border-dark">*/}
+                        {/*    <Chat />*/}
+                        {/*</Container>*/}
                     </div>
                 </div>
             </div>
