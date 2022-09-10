@@ -96,13 +96,13 @@ const Board = () => {
         let level = room._level;
 
         if (level < 9) {
-            _threshold = (level + 1) * 10;
+            _threshold = (level + 1) * 10 / 2;
         } else if (level >= 9 && level < 16) {
-            _threshold = 100;
+            _threshold = 100 / 2;
         } else if (level >= 16 && level <= 25) {
-            _threshold = 100 + ((level - 15) * 10);
+            _threshold = 100 + ((level - 15) * 10) / 2;
         } else {
-            _threshold = 200;
+            _threshold = 200 / 2;
         }
 
         if (count + room._countRemoved >= _threshold) {
