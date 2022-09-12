@@ -1,6 +1,6 @@
 import {
-   checkSingleLine, getBlock, makeArray, move, setBlock, eachBlock, unoccupied,
-   occupied, dropPiece, rotate, getFreeLinesFromTop, addMalus
+   checkSingleLine, getBlock, makeArray, move, setBlock, unoccupied,
+   occupied, dropPiece, rotate, getFreeLinesFromTop, addMalus, removeLines
 } from "./piece";
 import { l, j, o, i, DIR } from "../classes/Piece_utils";
 
@@ -158,5 +158,14 @@ describe('lines and blocks tests', () => {
       let block = makeArray(10, 20, 1);
       block = addMalus(block, 1);
       expect(block).toBe(false);
+   });
+
+   test('removeLines', () => {
+      let block = makeArray(10, 20, 0);
+      for (let i = 19; i >= 16; i--) {
+        block[i] = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+      };
+      let removedLines = removeLines(block);
+      expect(block[19]).toStrictEqual([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
    });
 });
