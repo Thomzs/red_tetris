@@ -3,13 +3,15 @@ import {useEffect, useState} from "react";
 import {requestPiece} from "../utils/api";
 import Chat from "./components/Chat";
 import {Container} from "react-bootstrap";
-import Board from "./components/Board";
+//import Board from "./components/Board";
 import {setGameStatus, setStatusGame} from "../slices/statusSlice";
 import {resetGame} from "../slices/roomSlice";
 import BoardList from "./components/BoardList";
 import {Allotment} from "allotment";
 import "allotment/dist/style.css";
 import {debounce} from "../utils/debounce";
+const { Board } = require('../views/components/Board');
+
 
 //TODO if not connected go connect
 

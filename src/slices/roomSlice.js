@@ -1,6 +1,6 @@
 import {createSlice} from "@reduxjs/toolkit";
 
-const initialState = {
+export const initialState = {
     _id: null,
     _admin: false,
     _chat: [],

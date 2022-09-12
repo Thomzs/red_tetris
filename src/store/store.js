@@ -6,7 +6,7 @@ import connectionReducer from "../slices/connectionSlice";
 import statusReducer from "../slices/statusSlice"
 import roomReducer from "../slices/roomSlice";
 
-const store = configureStore({
+export const store = configureStore({
     reducer: {
         player: playerReducer,
         status: statusReducer,

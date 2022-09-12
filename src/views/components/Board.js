@@ -5,6 +5,7 @@ import {setGameStatus} from "../../slices/statusSlice";
 import {DIR, KEY} from "../../classes/Piece_utils";
 import {useInterval} from "../../utils/useInterval";
 import {setCountRemoved, setLevelAndCountRemoved, setScore} from "../../slices/roomSlice";
+import React from 'react';
 import Chat from "./Chat";
 
 //Render the board, and the piece above the board.
@@ -83,7 +84,7 @@ export const computeRemovedLinesScore = (removedLines) => {
     return score;
 }
 
-const Board = () => {
+export const Board = () => {
     const {status, room} = useSelector((state) => state); //useless for now
     const [piece, setPiece] = useState(null);
     const [board, setBoard] = useState(makeArray(10, 20, 0));
@@ -307,6 +308,5 @@ const Board = () => {
     );
 }
 
-//module.exports = {Board, computeRemovedLinesScore};
-//export default {Board, computeRemovedLinesScore};
-export default Board;
+//module.exports = { Board };
+//export default Board;
