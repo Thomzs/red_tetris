@@ -252,7 +252,7 @@ const Board = () => {
                 <div className="col border border-dark p-0" id='tetris' style={{outline: 'none'}} tabIndex="0" onKeyDown={handleKey}>
                 {board.map((row, j) => {
                 return ( //Don't remove the key attribute
-                    <div key={j} className="row m-0" style={{width: '300px'}}>
+                    <div key={j} id={"row-" + j} className="row m-0" style={{width: '300px'}}>
                         {row.map((cell, i) => { //Drawing coordinates are reverted (y, x)
                             let inputPros = {
                                 style: {
@@ -278,7 +278,7 @@ const Board = () => {
                             }
 
                             return ( //Don't remove the key attribute
-                                <div key={i} {...inputPros}/>
+                                <div key={i} id={"col" + i} {...inputPros}/>
                             );
                         })}
                     </div>
