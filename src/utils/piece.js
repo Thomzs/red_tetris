@@ -64,7 +64,7 @@ export function loose() {
     alert("GAME OVER");
 }
 
-function getFreeLinesFromTop(blocks) {
+export function getFreeLinesFromTop(blocks) {
     let count = 0;
 
     for (let i = 0; i < blocks.length; i++) {

@@ -1,6 +1,6 @@
 import {
    checkSingleLine, getBlock, makeArray, move, setBlock, eachBlock, unoccupied,
-   occupied, dropPiece, rotate
+   occupied, dropPiece, rotate, getFreeLinesFromTop, addMalus
 } from "./piece";
 import { l, j, o, i, DIR } from "../classes/Piece_utils";
 
@@ -137,4 +137,26 @@ describe('lines and blocks tests', () => {
       expect(ret.dir).toBe(2); //means the direction is the same
    });
 
+   test('getFreeLinesFromTop', () => {
+      let block = makeArray(10, 20, 1);
+      let ret = getFreeLinesFromTop(block);
+      expect(ret).toBe(0);
+
+      block = makeArray(10, 20, 0);
+      block[19] = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+      ret = getFreeLinesFromTop(block);
+      expect(ret).toBe(19);
+   });
+
+   test('addMalus with available lines', () => {
+      let block = makeArray(10, 20, 0);
+      block = addMalus(block, 1);
+      expect(block[19][0]).toStrictEqual({'color': '#34362c', 'removable': false});
+   });
+
+   test('addMalus with no available lines', () => {
+      let block = makeArray(10, 20, 1);
+      block = addMalus(block, 1);
+      expect(block).toBe(false);
+   });
 });
