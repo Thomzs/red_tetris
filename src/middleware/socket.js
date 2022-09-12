@@ -1,6 +1,6 @@
 import { io, Socket } from "socket.io-client";
 import {setConnected, setDisconnected, startConnecting} from "../slices/connectionSlice";
-import { setUsername } from "../slices/playerSlice";
+import {setId, setUsername} from "../slices/playerSlice";
 import {setGameStatus, setStatusGame, setStatusHome} from "../slices/statusSlice";
 import {
     addPlayer,
@@ -11,7 +11,7 @@ import {
     playerLost,
     resetGame,
     reset,
-    setWin
+    setWin, addToChat, sendChat, setMalus
 } from "../slices/roomSlice";
 
 export const socketMiddleware = (store) => {
@@ -31,6 +31,7 @@ export const socketMiddleware = (store) => {
                 store.dispatch(setRoom(data.room));
                 if (data.admin) store.dispatch(setAdmin(true));
                 store.dispatch(setConnected());
+                store.dispatch(setId(data.id));
             });
 
             socket.on("connect", () => {
@@ -59,9 +60,7 @@ export const socketMiddleware = (store) => {
 
             socket.on('admin', () => {
                 store.dispatch(setAdmin(true));
-                //TODO
-                //socket.emit('message', {from: 'chat': 'xxx is now admin of the room'});
-                //store.dispatch(addToChat(from: 'chat', 'You are now admin of the room'));
+                store.dispatch(sendChat({from: 'system', text: `${store.getState().player._username} is now the admin of the room`, key: 'admin', playerId: store.getState().player._id}));
             });
 
             socket.on('winner', () => {
@@ -73,6 +72,15 @@ export const socketMiddleware = (store) => {
                 store.dispatch(reset());
                 store.dispatch(setPlayers(data));
                 store.dispatch(setGameStatus({gameStatus:'initial'}));
+            });
+
+            socket.on('newChat', (data) => {
+                store.dispatch(addToChat(data));
+            });
+
+            socket.on('malus', (data) => {
+                console.log("receiving : ", data);
+               store.dispatch(setMalus(data));
             });
 
         }
@@ -91,10 +99,15 @@ export const socketMiddleware = (store) => {
             }
 
             if (setGameStatus.match(action) && action.payload.gameStatus === 'readyNext') {
-                socket.emit('readyNext', {board: action.payload.board, room: store.getState().room._name}); //Tell server we are waiting for a tetrimino
+                console.log("sending removedLines: ", action.payload.removedLines ?? 0);
+                socket.emit('readyNext', {board: action.payload.board, room: store.getState().room._name, removedLines: action.payload.removedLines ?? 0}); //Tell server we are waiting for a tetrimino
             } else if (setGameStatus.match(action) && action.payload.gameStatus === 'loose') {
                 socket.emit('loose', {room: store.getState().room._name});
                 socket.emit('readyNext', {board: action.payload.board, room: store.getState().room._name});
+            }
+
+            if (sendChat.match(action)) {
+                socket.emit('chat', {message: action.payload, room: store.getState().room._name});
             }
         }
     };

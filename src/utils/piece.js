@@ -64,9 +64,40 @@ export function loose() {
     alert("GAME OVER");
 }
 
+function getFreeLinesFromTop(blocks) {
+    let count = 0;
+
+    for (let i = 0; i < blocks.length; i++) {
+        for (let j = 0; j < blocks[i].length; j++) {
+            if (blocks[i][j] !== 0) return count;
+        }
+        count++;
+    }
+    return count;
+}
+
+export function addMalus(board, malus) {
+    let tmp = board.map(inner => inner.slice());
+
+    if (getFreeLinesFromTop(tmp) < malus) return false;
+
+    let newLine = [];
+    for (let i = 0; i < 10; i++) {
+        newLine.push({color: '#34362c', removable: false});
+    }
+
+    tmp.splice(0, malus);
+
+    for (let j = 0; j < malus; j++) {
+        tmp.push(newLine);
+    }
+
+    return tmp;
+}
+
 export function checkSingleLine(line) {
     for (let i = 0; i <= 9; i++) {
-        if (line[i] === 0) {
+        if (line[i] === 0 || line[i].removable === false) {
             return false;
         }
     }

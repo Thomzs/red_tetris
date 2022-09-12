@@ -6,7 +6,7 @@ class Player {
         return new Promise(((resolve, reject) => {
             let newPlayer = {
                 socket: socket,
-                id: uuidv4(),
+                _id: null,
                 lost: false,
             };
             players.push(newPlayer);
@@ -20,6 +20,7 @@ class Player {
                 if (players[i].socket.id !== socketId) continue;
 
                 Object.assign(players[i], info);
+                players[i]._id = uuidv4();
                 resolve(players[i]);
                 return;
             }

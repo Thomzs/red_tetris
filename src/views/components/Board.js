@@ -1,15 +1,61 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useState} from "react";
-import {dropPiece, loose, makeArray, move, rotate, occupied, removeLines} from "../../utils/piece";
+import {dropPiece, makeArray, move, rotate, occupied, removeLines, addMalus} from "../../utils/piece";
 import {setGameStatus} from "../../slices/statusSlice";
 import {DIR, KEY} from "../../classes/Piece_utils";
 import {useInterval} from "../../utils/useInterval";
-import {setScore} from "../../slices/roomSlice";
+import {setCountRemoved, setLevelAndCountRemoved, setScore} from "../../slices/roomSlice";
 import Chat from "./Chat";
 
 //Render the board, and the piece above the board.
 //rotate, move left, move right update the piece, not the board.
 //drop updates the piece if it can go down. Otherwise, it calls dropPiece to update the board.
+
+function getInterval(level) {
+    const rate = 16.74;
+
+    switch (level) {
+        case 0:
+            return 53 * rate;
+        case 1:
+            return 49 * rate;
+        case 2:
+            return 45 * rate;
+        case 3:
+            return 41 * rate;
+        case 4:
+            return 37 * rate;
+        case 5:
+            return 33 * rate;
+        case 6:
+            return 28 * rate;
+        case 7:
+            return 22 * rate;
+        case 8:
+            return 17 * rate;
+        case 9:
+            return 11 * rate;
+        case 10:
+            return 10 * rate;
+        case 11:
+            return 9 * rate;
+        case 12:
+            return 8 * rate;
+        case 13:
+            return 7 * rate;
+        case 14:
+        case 15:
+            return 6 * rate;
+        case 16:
+        case 17:
+            return 5 * rate;
+        case 18:
+        case 19:
+            return 4 * rate;
+        default:
+            return 3 * rate;
+    }
+}
 
 function bit_test(num, bit) {
     return ((1 << bit) & (num & 0xFFFF));
@@ -41,8 +87,33 @@ const Board = () => {
     const {status, room} = useSelector((state) => state); //useless for now
     const [piece, setPiece] = useState(null);
     const [board, setBoard] = useState(makeArray(10, 20, 0));
+    const [removed, setRemoved] = useState(0);
 
     const dispatch = useDispatch();
+
+    const updateCount = (count) => {
+        let _threshold = 0;
+        let level = room._level;
+
+        if (level < 9) {
+            _threshold = (level + 1) * 10 / 2;
+        } else if (level >= 9 && level < 16) {
+            _threshold = 100 / 2;
+        } else if (level >= 16 && level <= 25) {
+            _threshold = 100 + ((level - 15) * 10) / 2;
+        } else {
+            _threshold = 200 / 2;
+        }
+
+        if (count + room._countRemoved >= _threshold) {
+            dispatch(setLevelAndCountRemoved({
+                level: level + 1,
+                countRemoved: count + room._countRemoved - _threshold
+            }));
+        } else {
+            dispatch(setCountRemoved(count + room._countRemoved));
+        }
+    };
 
     const doDrop = () => { //Running every second, AND on key.Down pressed
         if (!piece || status._gameStatus !== 'placing') return
@@ -55,6 +126,8 @@ const Board = () => {
             setPiece(null);
             setBoard(ret.board);
             dispatch(setScore(10 + room._score + computeRemovedLinesScore(ret.removedLines)))
+            updateCount(ret.removedLines);
+            setRemoved(ret.removedLines);
             clearInterval(doDrop); //If the piece is placed, then wait for another
         } else {
             setPiece(ret);
@@ -80,7 +153,7 @@ const Board = () => {
                 break;
             default:
                 break;
-        };
+        }
         handleKey({keyCode:keyCode});
     }
 
@@ -110,6 +183,12 @@ const Board = () => {
         document.getElementById('tetris').focus();
     };
 
+    const lose = () => {
+        dispatch(setGameStatus({gameStatus: 'loose', board: board}));
+        setPiece(null);
+        alert('LOSE');
+    }
+
     useEffect(() => {
         if (status._gameStatus === 'initial') {
             setBoard(makeArray(10, 20, 0));
@@ -118,8 +197,8 @@ const Board = () => {
     }, [status._gameStatus]);
 
     useEffect(() => {
-        if (status._gameStatus !== 'initial') {
-            dispatch(setGameStatus({gameStatus: 'readyNext', board: board}));
+        if (status._gameStatus !== 'initial' && piece === null) {
+            dispatch(setGameStatus({gameStatus: 'readyNext', board: board, removedLines: removed}));
         }
     }, [board]);
 
@@ -128,12 +207,33 @@ const Board = () => {
             setPiece(room._currentPiece);
             dispatch(setGameStatus({gameStatus:'placing'}));
             if (occupied(board, room._currentPiece.type, room._currentPiece.x, room._currentPiece.y, room._currentPiece.dir)) { //Checking if the new piece can be dropped
-                loose(); //if not Loose;
-                dispatch(setGameStatus({gameStatus: 'loose', board: board}));
-                setPiece(null);
+                lose(); //if not Loose;
             }
         }
     }, [room._currentPiece]);
+
+    useEffect(() => {
+        if (room._malus === 0 || !['placing', 'readyNext'].includes(status._gameStatus)) return;
+
+        let tmp = addMalus(board, room._malus);
+        if (!tmp) {
+            console.log("lost1");
+            lose();
+        }
+        else {
+            setBoard(tmp);
+            if (piece !== null) {
+                let newPiece = {...piece};
+                newPiece.y -= room._malus;
+                if (newPiece.y < 0) newPiece.y = 0;
+                setPiece(newPiece);
+                if (occupied(board, piece.type, piece.x, piece.y, piece.dir)) { //Checking if the new piece can be dropped
+                    console.log("lost2: ", tmp);
+                    lose(); //if not Loose;
+                }
+            }
+        }
+    }, [room._malus]);
 
     useEffect(() => {
         if (room._win) {
@@ -142,13 +242,14 @@ const Board = () => {
         }
     }, [room._win]);
 
-    useInterval(doDrop, 1000);
+    useInterval(doDrop, getInterval(room._level));
 
     //Foreach rows and for each column of game._bord, display each cell
     return (
         <section id="board-section">
-            <div className="col">
-                <div className="col border border-dark justify-content-center" id='tetris' style={{width: '300px',  outline: 'none'}} tabIndex="0" onKeyDown={handleKey}>
+            <div className="col" >
+                <div className="row d-flex justify-content-center m-auto" style={{width: '300px'}}>
+                <div className="col border border-dark p-0" id='tetris' style={{outline: 'none'}} tabIndex="0" onKeyDown={handleKey}>
                 {board.map((row, j) => {
                 return ( //Don't remove the key attribute
                     <div key={j} className="row m-0" style={{width: '300px'}}>
@@ -184,13 +285,22 @@ const Board = () => {
                 );
             })}
                 </div>
-                <div className="row d-flex mt-3">
-                    <div className="col d-flex align-content-center justify-content-center">
-                        <button className="btn btn-outline-dark me-1" id="left-button" onClick={onClickMoveListener}>left ←</button>
-                        <button className="btn btn-outline-dark me-1" id="right-button" onClick={onClickMoveListener}>right →</button>
-                        <button className="btn btn-outline-dark me-1" id="down-button" onClick={onClickMoveListener}>down ↓</button>
-                        <button className="btn btn-outline-dark me-1" id="up-button" onClick={onClickMoveListener}>rotate ↑</button>
+                </div>
+                <div className="row d-flex justify-content-center">
+                <div className="btn-toolbar justify-content-center mt-3 position-absolute">
+                    <div className="btn-group" role="group">
+                        <button className="btn btn-outline-dark me-1 d-inline-block" id="left-button" onClick={onClickMoveListener}>left ←</button>
                     </div>
+                    <div className="btn-group" role="group">
+                        <button className="btn btn-outline-dark me-1 d-inline-block" id="right-button" onClick={onClickMoveListener}>right →</button>
+                    </div>
+                    <div className="btn-group" role="group">
+                        <button className="btn btn-outline-dark me-1 d-inline-block" id="down-button" onClick={onClickMoveListener}>down ↓</button>
+                    </div>
+                    <div className="btn-group" role="group">
+                        <button className="btn btn-outline-dark d-inline-block" id="up-button" onClick={onClickMoveListener}>rotate ↑</button>
+                    </div>
+                </div>
                 </div>
             </div>
         </section>

@@ -1,6 +1,7 @@
 const {v4: uuidv4} = require("uuid");
 const {Status} = require("../utils/status");
 const removeKeys = require("../utils/removeKeys");
+const {i, j, k, l, m, n, o} = require('./Piece_utils');
 
 class Room {
 
@@ -31,6 +32,7 @@ class Room {
                     private: (password !== ''),
                     players: [],
                     mode: mode,
+                    pieces: [i, j, k, l, m, n, o],
                     status: Status.Lobby,
                     countWaiting: 0,
                     chat: [],
@@ -105,7 +107,7 @@ class Room {
                 if (rooms[i].name === room) {
                     for (let j = 0; j < rooms[i].players.length; j++) {
                         if (rooms[i].players[j].socket.id === id) {
-                            rooms[i].players[j].board = board;
+                            rooms[i].players[j]._map = board;
                             if (rooms[i].countWaiting > 0) {
                                 rooms[i].countWaiting--;
                             }

@@ -21,10 +21,6 @@ const _Piece = new Piece();
 let players = [];
 let rooms = [];
 
-//just for dev purposes
-rooms.push({id: uuidv4(), name: 'La room 1', password: 'abcde', private: true, players: [], mode: 'classic', status: Status.InGame, chat: [], countWaiting: 0},
-    {id: uuidv4(), name: 'Wesh les bgs', password: '', private: false, players: [], mode: 'classic', status: Status.Lobby, chat: [], countWaiting: 0});
-
 const io = new Server({
     cors: {
         origin: "*",
@@ -51,6 +47,9 @@ io.on("connection", async(socket) => {
                     let tmp = Object.assign(_room.players);
                     socket.to(_room.name).emit('updatePlayers', removeKeys(tmp, 'socket')); //REMOVE PLAYER WITH ID
                     let index = players.findIndex(p => p.socket.id === socket.id);
+
+                    io.to(_room.name).emit('newChat', {from: 'system', text: `${players[index]._username} has left the room`});
+
                     if (players[index].admin && _room.players[0]) {
                         let newAdmin = players.findIndex(p => p.socket.id === _room.players[0].socket.id);
                         players[newAdmin].admin = true;
@@ -80,7 +79,7 @@ io.on("connection", async(socket) => {
                     socket.to(_room.name).emit('updatePlayers', removeKeys(tmp, 'socket'));
                 }
                 if (_room.countWaiting === 0) {
-                    _Piece.getPiece()
+                    _Piece.getPiece(rooms, data.room)
                         .then((piece) => {
                             if (_room.status !== Status.InGame) {//Game has just started
                                 _room.status = Status.InGame;
@@ -89,6 +88,12 @@ io.on("connection", async(socket) => {
                             io.to(_room.name).emit('newPiece', piece);
                             _room.countWaiting = _room.players.length;
                         });
+                }
+                console.log('removedLines: ', data.removedLines);
+                if (data.removedLines && data.removedLines > 1) {
+                    let toAdd = data.removedLines <= 4 ? data.removedLines - 1 : 3;
+                    console.log('sending malus: ', toAdd);
+                    socket.to(_room.name).emit('malus', toAdd);
                 }
             })
             .catch((reason => socket.emit('error', reason)));
@@ -118,6 +123,11 @@ io.on("connection", async(socket) => {
             })
             .catch(r => console.log(r));
     });
+
+    //Just broadcast messages
+    socket.on('chat', (data) => {
+        socket.to(data.room).emit('newChat', data.message);
+    })
 });
 
 //User has joiner a room. Keep tracks of the room he is in.
@@ -134,8 +144,9 @@ io.of("/").adapter.on("join-room", (room, id) => {
         .then((ret) => {
             let tmp = Object.assign({}, ret.room);
             tmp = removeKeys(tmp, 'socket'); //Socket object should be private,
-            player?.socket.emit('joinRoomOk', {room: tmp, admin: ret.admin});
+            player?.socket.emit('joinRoomOk', {room: tmp, admin: ret.admin, id: player._id});
             player?.socket.to(room).emit('newPlayer', removeKeys(player, 'socket'));
+            io.to(room).emit('newChat', {from: 'system', text: `${player._username} has joined the room`, key: 'join', playerId: player._id});
             player.admin = ret.admin;
         })
         .catch(() => player?.socket.emit('joinError'));

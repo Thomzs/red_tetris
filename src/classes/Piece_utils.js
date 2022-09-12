@@ -10,7 +10,7 @@ let o = { blocks: [0x0C60, 0x4C80, 0xC600, 0x2640], color: 'red'    };
 //TODO Pieces some pieces can have a higher initial position.
 //Maybe use brighter colors? (blue)
 
-let gamePieces = [i, j, k, l, m, n, o];
+let gamePieces = [i, i, i, i, j, j, j, j, k, k, k, k, l, l, l, l, m, m, m, m, n, n, n, n, o, o, o, o];
 
 let KEY     = { ESC: 27, SPACE: 32, LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40 }; //Key codes
 let DIR     = { UP: 0, RIGHT: 1, DOWN: 2, LEFT: 3, MIN: 0, MAX: 3 }; // Direction enum
