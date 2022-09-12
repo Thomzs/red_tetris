@@ -15,11 +15,7 @@ import { act } from "react-dom/test-utils";
 import { Provider } from "react-redux";
 import {unmountComponentAtNode} from "react-dom";
 import {render} from "sass";
-const jsdom = require('jsdom');
-
-const { JSDOM } = jsdom;
-const dom = new JSDOM(`<!DOCTYPE html\>`)
-const document = dom.window.document;
+import renderer from 'react-test-renderer'
 
 let container = null;
 beforeEach(() => {
@@ -63,18 +59,23 @@ describe('board tests', () => {
         const reducer = [statusReducer, playerReducer, roomReducer];
         const _store = store;
         //const component = renderer.create();
-        act(() => {
-            render(
-                <Provider store={store}>
-                    <Board />
-                </Provider>,
-                container
-            )
-        })
+
+
+       // expect(component.root.findByProps({className: "menu-login"}).children.length).toEqual(2);
+
+        // act(() => {
+        //     render(
+        //         <Provider store={store}>
+        //             <Board />
+        //         </Provider>,
+        //         container
+        //     )
+        // });
             /*<Provider store={store}>
                 <Board />
             </Provider>*/
-        //expect(component.root.findByProps({id: "col-0"}).length).toEqual(1);
+        // expect(container.querySelectorAll('div[id^=row]').length).toEqual(10);
+        // expect(container.querySelectorAll('div[id^=col]').length).toEqual(100);
         //const _board = TestRenderer.create(<Board/>);
         //const testInstance = _board.root;
 
