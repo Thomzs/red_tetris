@@ -21,10 +21,6 @@ const _Piece = new Piece();
 let players = [];
 let rooms = [];
 
-//just for dev purposes
-rooms.push({id: uuidv4(), name: 'La room 1', password: 'abcde', private: true, players: [], mode: 'classic', status: Status.InGame, chat: [], countWaiting: 0},
-    {id: uuidv4(), name: 'Wesh les bgs', password: '', private: false, players: [], mode: 'classic', status: Status.Lobby, chat: [], countWaiting: 0});
-
 const io = new Server({
     cors: {
         origin: "*",
@@ -83,7 +79,7 @@ io.on("connection", async(socket) => {
                     socket.to(_room.name).emit('updatePlayers', removeKeys(tmp, 'socket'));
                 }
                 if (_room.countWaiting === 0) {
-                    _Piece.getPiece()
+                    _Piece.getPiece(rooms, data.room)
                         .then((piece) => {
                             if (_room.status !== Status.InGame) {//Game has just started
                                 _room.status = Status.InGame;
