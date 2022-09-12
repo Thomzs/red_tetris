@@ -91,6 +91,7 @@ io.on("connection", async(socket) => {
         let index = rooms.findIndex((room) => room.name = data.room);
         rooms[index].status = Status.willStart;
         io.to(data.room).emit('willStart');
+        io.to(data.room).emit('newChat', {from: 'system', text: 'Get Ready! Next game will start in five seconds.'});
         setTimeout(() => {
             _Piece.getPiece(rooms, data.room)
                 .then((piece) => {
