@@ -37,6 +37,16 @@ io.on("connection", async(socket) => {
     console.log("CONNECTION FROM: ", socket.handshake.headers.origin);
     await _Player.newPlayer(players, socket);
 
+
+    const sendPiece = (_room, piece) => {
+        if (_room.status !== Status.InGame) {//Game has just started
+            _room.status = Status.InGame;
+            _room.lost = _room.players.length;
+        }
+        io.to(_room.name).emit('newPiece', piece);
+        _room.countWaiting = _room.players.length;
+    }
+
     //On disconnect, remove player from the room he was in.
     //if player was admin, set the first one in the list as the new admin
     //And tell him
@@ -55,6 +65,14 @@ io.on("connection", async(socket) => {
                         players[newAdmin].admin = true;
                         players[newAdmin].socket.emit('admin');
                     }
+
+                    if (_room.countWaiting === 0) {
+                        _Piece.getPiece(rooms, _room.name)
+                            .then((piece) => {
+                                sendPiece(_room, piece);
+                            })
+                            .catch((r) => console.log(r));
+                    }
                 }
                 players = players.filter(p => { return p.socket.id !== socket.id });
             })
@@ -69,6 +87,19 @@ io.on("connection", async(socket) => {
             .catch(_ => socket.emit('joinError'))///Else joinError.
     });
 
+    socket.on('requestStart', (data) => {
+        let index = rooms.findIndex((room) => room.name = data.room);
+        rooms[index].status = Status.willStart;
+        io.to(data.room).emit('willStart');
+        setTimeout(() => {
+            _Piece.getPiece(rooms, data.room)
+                .then((piece) => {
+                    sendPiece(rooms[index], piece);
+                })
+                .catch((r) => console.log(r));
+        }, 5000);
+    });
+
     //Player asking for a tetrimino
     //Send to everyone a new piece only if every player in the room is done with the current piece.
     socket.on('readyNext', async (data) => {
@@ -81,13 +112,9 @@ io.on("connection", async(socket) => {
                 if (_room.countWaiting === 0) {
                     _Piece.getPiece(rooms, data.room)
                         .then((piece) => {
-                            if (_room.status !== Status.InGame) {//Game has just started
-                                _room.status = Status.InGame;
-                                _room.lost = _room.players.length;
-                            }
-                            io.to(_room.name).emit('newPiece', piece);
-                            _room.countWaiting = _room.players.length;
-                        });
+                            sendPiece(_room, piece);
+                        })
+                        .catch((r) => console.log(r));
                 }
                 console.log('removedLines: ', data.removedLines);
                 if (data.removedLines && data.removedLines > 1) {
@@ -116,12 +143,12 @@ io.on("connection", async(socket) => {
 
     //User has acknowledged that he was the winner. Reset the room state for everyone.
     socket.on('gameEnd', (data) => {
-        _Room.resetLost(rooms, data.name)
+        _Room.resetLost(rooms, data.room)
             .then((_room) => {
                 let tmp = Object.assign(_room);
-                io.to(data.name).emit('lobby', removeKeys(tmp, 'socket'));
+                io.to(data.room).emit('lobby', removeKeys(tmp, 'socket'));
             })
-            .catch(r => console.log(r));
+            .catch(r => console.log(`Error accessing room ${data.room}`));
     });
 
     //Just broadcast messages

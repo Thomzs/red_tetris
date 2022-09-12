@@ -1,7 +1,7 @@
 import { io, Socket } from "socket.io-client";
 import {setConnected, setDisconnected, startConnecting} from "../slices/connectionSlice";
 import {setId, setUsername} from "../slices/playerSlice";
-import {setGameStatus, setStatusGame, setStatusHome} from "../slices/statusSlice";
+import {requestStart, setGameStatus, setStatusGame, setStatusHome} from "../slices/statusSlice";
 import {
     addPlayer,
     setAdmin,
@@ -11,7 +11,7 @@ import {
     playerLost,
     resetGame,
     reset,
-    setWin, addToChat, sendChat, setMalus
+    setWin, addToChat, sendChat, setMalus, gameHasStarted, gameWillStart, backToLobby
 } from "../slices/roomSlice";
 
 export const socketMiddleware = (store) => {
@@ -68,10 +68,14 @@ export const socketMiddleware = (store) => {
                 socket.emit('gameEnd', {room: store.getState().room._name});
             });
 
+            socket.on('willStart', () => {
+                store.dispatch(resetGame());
+                store.dispatch(gameWillStart());
+            });
+
             socket.on('lobby', (data) => {
-                store.dispatch(reset());
-                store.dispatch(setPlayers(data));
                 store.dispatch(setGameStatus({gameStatus:'initial'}));
+                store.dispatch(backToLobby());
             });
 
             socket.on('newChat', (data) => {
@@ -80,7 +84,7 @@ export const socketMiddleware = (store) => {
 
             socket.on('malus', (data) => {
                 console.log("receiving : ", data);
-               store.dispatch(setMalus(data));
+                store.dispatch(setMalus(data));
             });
 
         }
@@ -103,11 +107,19 @@ export const socketMiddleware = (store) => {
                 socket.emit('readyNext', {board: action.payload.board, room: store.getState().room._name, removedLines: action.payload.removedLines ?? 0}); //Tell server we are waiting for a tetrimino
             } else if (setGameStatus.match(action) && action.payload.gameStatus === 'loose') {
                 socket.emit('loose', {room: store.getState().room._name});
-                socket.emit('readyNext', {board: action.payload.board, room: store.getState().room._name});
+                if (store.getState().room._players.length > 1) {
+                    socket.emit('readyNext', {board: action.payload.board, room: store.getState().room._name});
+                } else {
+                    socket.emit('gameEnd', {room: store.getState().room._name});
+                }
             }
 
             if (sendChat.match(action)) {
                 socket.emit('chat', {message: action.payload, room: store.getState().room._name});
+            }
+
+            if (requestStart.match(action)) {
+                socket.emit('requestStart', {room: store.getState().room._name});
             }
         }
     };

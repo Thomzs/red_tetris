@@ -39,20 +39,20 @@ function RoomsList(props) {
             key: room.id,
         };
 
-        if (room.status === Status.InGame) {
-            inputPros.style.backgroundColor = '#ed958f'
+        if (room.status !== Status.Lobby) {
+            inputPros.style.backgroundColor = '#ed958f';
         }
 
         if (index + 1 < rooms.length) {  //No bottom border for the last one
             inputPros.className = 'row border-bottom';
         }
 
-        if (room.private && room.status !== Status.InGame && room.players.length < 8) {  //Password prompt for a private room
+        if (room.private && room.status === Status.Lobby && room.players.length < 8) {  //Password prompt for a private room
             inputPros.onClick = () => {
                 clickedRoom = room;
                 props.handle()
             };
-        } else if (room.status !== Status.InGame && room.players.length < 8) {
+        } else if (room.status === Status.Lobby && room.players.length < 8) {
             inputPros.onClick = () => {
                 props.connect(room, '');
             }

@@ -10,6 +10,10 @@ class Piece {
     getPiece = (rooms, name) => {
         return new Promise((resolve, reject) => {
             let idx_room = rooms.findIndex((room) => room.name === name);
+
+            if (idx_room < 0 || rooms[idx_room] === undefined) {
+                reject(`Error accessing room named: ${name}`);
+            }
             if (rooms[idx_room].pieces.length === 0) {
                 rooms[idx_room].pieces = [i, j, k, l, m, n, o];
             }

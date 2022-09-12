@@ -58,7 +58,7 @@ class Room {
 
             if (!room) {
                 reject();
-            } else if (room.password === password) {
+            } else if (room.password === password && room.Status === Status.Lobby) {
                 resolve(true);
             } else {
                 resolve(false);
@@ -160,6 +160,7 @@ class Room {
             for (let i = 0; i < rooms[roomIndex].players; i++) {
                 rooms[roomIndex].players[i] = false;
             }
+            rooms[roomIndex].status = Status.Lobby;
             resolve(rooms[roomIndex]);
         });
     }
