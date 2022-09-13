@@ -7,6 +7,7 @@ import {useInterval} from "../../utils/useInterval";
 import {setCountRemoved, setLevelAndCountRemoved, setScore} from "../../slices/roomSlice";
 import React from 'react';
 import Chat from "./Chat";
+import {Status} from "../../utils/status";
 
 //Render the board, and the piece above the board.
 //rotate, move left, move right update the piece, not the board.
@@ -191,14 +192,15 @@ export const Board = () => {
     }
 
     useEffect(() => {
-        if (status._gameStatus === 'initial') {
+        if (room._status === Status.willStart) {
             setBoard(makeArray(10, 20, 0));
             setPiece(null);
+            //getReadyMessage
         }
-    }, [status._gameStatus]);
+    }, [room._status]);
 
     useEffect(() => {
-        if (status._gameStatus !== 'initial' && piece === null) {
+        if (room.status !== Status.InGame && status._gameStatus !== 'initial' && piece === null) {
             dispatch(setGameStatus({gameStatus: 'readyNext', board: board, removedLines: removed}));
         }
     }, [board]);
@@ -218,7 +220,6 @@ export const Board = () => {
 
         let tmp = addMalus(board, room._malus);
         if (!tmp) {
-            console.log("lost1");
             lose();
         }
         else {
@@ -229,7 +230,6 @@ export const Board = () => {
                 if (newPiece.y < 0) newPiece.y = 0;
                 setPiece(newPiece);
                 if (occupied(board, piece.type, piece.x, piece.y, piece.dir)) { //Checking if the new piece can be dropped
-                    console.log("lost2: ", tmp);
                     lose(); //if not Loose;
                 }
             }

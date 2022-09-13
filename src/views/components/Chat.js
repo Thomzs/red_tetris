@@ -24,8 +24,8 @@ const OthersMessage = (props) => {
                 </div>
                 {props.text.map((_text, index) => {
                     return (
-                        <div>
-                            <p key={index} className="small p-2 ms-3 mb-1 rounded-3 text-white d-inline-block"
+                        <div key={index}>
+                            <p className="small p-2 ms-3 mb-1 rounded-3 text-white d-inline-block"
                                style={{backgroundColor: '#000000'}}>{_text}</p>
                         </div>
                     );
@@ -49,8 +49,8 @@ const MeMessage = (props) => {
             <div className="">
                 {props.text.map((_text, index) => {
                     return (
-                        <div className="d-flex justify-content-end">
-                            <p key={index} className="small p-2 me-3 mb-1 text-white rounded-3 bg-danger d-inline-block">{_text}</p>
+                        <div key={index} className="d-flex justify-content-end">
+                            <p className="small p-2 me-3 mb-1 text-white rounded-3 bg-danger d-inline-block">{_text}</p>
                         </div>
                     );
                 })}

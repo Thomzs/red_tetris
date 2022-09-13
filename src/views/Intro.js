@@ -6,11 +6,6 @@ const Intro = () => {
     const { player }  = useSelector((state) => state);
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        const timer = setTimeout(() => dispatch(setStatusHome()), 5000);
-        return () => clearTimeout(timer);
-    }, []);
-
     return (
         <section className="intro">
             <div className="animated-title">

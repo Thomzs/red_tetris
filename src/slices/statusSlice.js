@@ -15,7 +15,8 @@ const statusSlice = createSlice({
         },
         setGameStatus: (state, action) => {
             state._gameStatus = action.payload.gameStatus;
-        }
+        },
+        requestStart: () => {},
     },
 });
 
@@ -23,6 +24,7 @@ export const {
     setStatusHome,
     setStatusGame,
     setGameStatus,
+    requestStart,
 } = statusSlice.actions;
 
 export default statusSlice.reducer;

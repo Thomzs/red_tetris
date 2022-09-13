@@ -3,15 +3,14 @@ import {useEffect, useState} from "react";
 import {requestPiece} from "../utils/api";
 import Chat from "./components/Chat";
 import {Container} from "react-bootstrap";
-//import Board from "./components/Board";
-import {setGameStatus, setStatusGame} from "../slices/statusSlice";
+import Board from "./components/Board";
+import {requestStart, setGameStatus, setStatusGame} from "../slices/statusSlice";
 import {resetGame} from "../slices/roomSlice";
 import BoardList from "./components/BoardList";
 import {Allotment} from "allotment";
 import "allotment/dist/style.css";
 import {debounce} from "../utils/debounce";
-const { Board } = require('../views/components/Board');
-
+import {Status} from "../utils/status";
 
 //TODO if not connected go connect
 
@@ -21,13 +20,8 @@ const Game = () => {
     const dispatch = useDispatch(); //react stuff
 
     const startGame = () => {
-        if (status._gameStatus === 'initial') {
-            dispatch(setGameStatus({gameStatus: 'readyNext', board: null}));
-            document.getElementById('tetris').focus();
-        } else {
-            dispatch(resetGame());
-            dispatch(setGameStatus({gameStatus: 'initial'}));
-        }
+        dispatch(requestStart());
+        document.getElementById('tetris').focus();
     }
 
     const splitChange = debounce((event) => {
@@ -49,7 +43,9 @@ const Game = () => {
                 <div className="col-8 d-flex justify-content-center p-0">
                     <div className="row w-100">
                         <div className="col d-flex align-self-center justify-content-center">
-                            <button className="btn btn-outline-dark mt-4" onClick={startGame} disabled={!room._admin}>Start Game</button>
+                            <button className="btn btn-outline-dark mt-4" onClick={startGame}
+                                    disabled={(!room._admin || room._status !== Status.Lobby)}
+                            >Start Game</button>
                         </div>
                         <div className="col-4 p-0 align-self-center">
                             <Board />

@@ -1,4 +1,6 @@
 import {createSlice} from "@reduxjs/toolkit";
+import {Status} from "../utils/status";
+import {makeArray} from "../utils/piece";
 
 export const initialState = {
     _id: null,
@@ -15,6 +17,7 @@ export const initialState = {
     _malus: 0,
     _countRemoved: 0,
     _level: 0,
+    _status: Status.Lobby,
 }
 
 export const roomSlice = createSlice({
@@ -71,6 +74,15 @@ export const roomSlice = createSlice({
             state._level = action.payload.level;
             state._countRemoved = action.payload.countRemoved;
         },
+        gameWillStart: (state) => {
+            state._status = Status.willStart;
+        },
+        gameHasStarted: (state) => {
+            state._status = Status.InGame;
+        },
+        backToLobby: (state) => {
+            state._status = Status.Lobby;
+        },
         resetGame: (state) => {
             state._score = 0;
             state._currentPiece = null;
@@ -79,6 +91,7 @@ export const roomSlice = createSlice({
             state._malus = 0;
             state._countRemoved = 0;
             state._level = 0;
+            state._players.map((player) => player._map = makeArray(10, 20, 0))
         },
         reset: () => initialState,
     },
@@ -99,6 +112,9 @@ export const {
     setCountRemoved,
     setLevel,
     setLevelAndCountRemoved,
+    gameWillStart,
+    gameHasStarted,
+    backToLobby,
     resetGame,
     reset,
 } = roomSlice.actions;
