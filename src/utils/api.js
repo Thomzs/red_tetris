@@ -38,13 +38,16 @@ const requestCreateRoom = async (name, mode, password) => {
     return body;
 };
 
-const requestPiece = async () => { //TODO delete this once testing is done.
-    const response = await fetch('http://localhost:8080/getPiece');
+const directRoomRequest = async (room, password) => {
+    const response = await fetch('http://localhost:8080/directRequest?' + new URLSearchParams({
+        room: room,
+        password: password,
+    }));
     const body = await response.json();
 
     console.log(body);
     if (response.status !== 200) {
-        throw Error(body.message)
+        throw Error(body.message);
     }
     return body;
 }
@@ -53,5 +56,5 @@ export {
     getRooms,
     checkRoomPassword,
     requestCreateRoom,
-    requestPiece,
+    directRoomRequest,
 };

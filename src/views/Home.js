@@ -2,7 +2,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {setStatusGame} from "../slices/statusSlice";
 
 import Modal from 'react-bootstrap/Modal';
-import {useEffect, useState} from "react";
+import {createRef, useEffect, useRef, useState} from "react";
 import {Form} from "react-bootstrap";
 import styled, { keyframes } from "styled-components";
 import Tada from "@bit/formidablelabs.react-animations.tada";
@@ -11,6 +11,7 @@ import {checkRoomPassword, getRooms, requestCreateRoom} from "../utils/api";
 import {ArrowClockwise} from 'react-bootstrap-icons'
 import {useForm} from "react-hook-form";
 import {Status} from "../utils/status";
+import useDidMountEffect from "../utils/useDidMountEffect";
 
 //TODO if not connected go connect
 
@@ -70,12 +71,11 @@ function RoomsList(props) {
     return ret;
 }
 
-const Home = () => {
+const Home = (props) => {
     const dispatch = useDispatch();
 
     const initialState = {password: '', roomName: '', mode: 'classical'};
 
-    const { connection: { _connected } } = useSelector((state) => state);
     const [showForm, setShowForm] = useState(false);
     const [showPrompt, setShowPrompt] = useState(false);
     const [wrongPassword, setWrongPassword] = useState("visually-hidden");
@@ -86,16 +86,13 @@ const Home = () => {
     const {register, handleSubmit, reset} = useForm({
         defaultValues: initialState
     });
+    const [initPath, setInitPath] = useState(props.args);
+
+    const passwordField = useRef();
 
     const initGameConnection = (room, password) => {
          dispatch(startConnecting({room: room, password: password}));
     };
-
-    useEffect(() => {
-        if (_connected) {
-            dispatch(setStatusGame());
-        }
-    }, [_connected]);
 
     const getUpdateRooms = () => {
         getRooms()
@@ -169,14 +166,20 @@ const Home = () => {
         return false;
     };
 
-    const goGame = () => {
-        dispatch(setStatusGame());
-    };
-
     useEffect(() => {
+        if (initPath === null || initPath === undefined || !initPath.reason) return;
         // eslint-disable-next-line no-restricted-globals
         history.replaceState(null, 'Tetris', "/");
         getUpdateRooms();
+
+        if (initPath.reason === false) {
+            alert('The password is incorrect for this room');
+            setInitPath(null);
+        } else if (initPath.reason.message
+            && (typeof initPath.reason.message === 'string' || initPath.reason.message instanceof String)) {
+            alert(initPath.reason.message);
+            setInitPath(null);
+        }
     }, []);
 
     return (
@@ -246,7 +249,7 @@ const Home = () => {
                     <Modal.Body>
                         <Form.Group className="mb-3" controlId="room-password">
                             <Form.Label>Password: </Form.Label>
-                            <Form.Control type="text" placeholder="Room password"
+                            <Form.Control type="text" placeholder="Room password" data-id="passwordField" ref={passwordField}
                                 {...register("password", {required: "You need to enter a password"})}
                             />
                         </Form.Group>

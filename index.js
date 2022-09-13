@@ -66,7 +66,7 @@ io.on("connection", async(socket) => {
                         players[newAdmin].socket.emit('admin');
                     }
 
-                    if (_room.countWaiting === 0) {
+                    if (_room.countWaiting === 0 && _room.status === Status.InGame) {
                         _Piece.getPiece(rooms, _room.name)
                             .then((piece) => {
                                 sendPiece(_room, piece);
@@ -198,7 +198,7 @@ app.get('/askRoom', (req, res) => {
 
     _Room.checkRoomPassword(rooms, roomId, password)
         .then(r => res.send(r))
-        .catch(() => res.send(JSON.stringify({ message: 'This room does not exist.'})));
+        .catch(() => res.send(JSON.stringify({ message: 'Either this room does not exist, or you can\'t join it.'})));
 })
 
 app.get('/createRoom', (req, res) => {
@@ -209,6 +209,23 @@ app.get('/createRoom', (req, res) => {
     _Room.createRoom(rooms, name, password, mode)
         .then((r) => res.send(r))
         .catch(() => res.send(JSON.stringify('ROOMNAME-TAKEN')));
+});
+
+app.get('/directRequest', (req, res) => {
+   let name = req.query.room;
+   let password = req.query.password;
+   let mode = 'classic';
+
+   //TODO one function.
+   console.log('Requesting name+password:', name, password);
+   _Room.createRoomIfNotExist(rooms, name, password, mode)
+       .then((r) => {
+           console.log('OK JOIN1', r);
+           let tmp = r ? Object.assign(r) : false;
+           res.send(r ? removeKeys(tmp, 'socket') : false);
+           console.log('OK JOIN2');
+       })
+       .catch(() => {res.send(JSON.stringify({ message: 'It seems you can\'t join this room.'})); console.log('NOT OK');});
 });
 
 io.listen(3001);

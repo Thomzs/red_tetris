@@ -58,12 +58,38 @@ class Room {
 
             if (!room) {
                 reject();
-            } else if (room.password === password && room.Status === Status.Lobby) {
-                resolve(true);
+            } else if (room.password === password && room.status === Status.Lobby) {
+                resolve(room);
             } else {
                 resolve(false);
             }
         })
+    }
+
+    checkRoomPasswordByName = (rooms, name, password) => {
+        return new Promise((resolve, reject) => {
+            let room = rooms.find(obj => obj.name === name);
+
+            if (!room) {
+                console.log('steuplait');
+                reject();
+                return;
+            } else if (room.password === password) {
+                if (room.status === Status.Lobby) {
+                    resolve(room);
+                    console.log('arrete');
+                    return;
+                } else {
+                    console.log('tes putains');
+                    reject();
+                    return;
+                }
+            } else {
+                console.log('de conneries');
+                resolve(false);
+                return;
+            }
+        });
     }
 
     joinRoom = (rooms, name, player) => {
@@ -162,6 +188,38 @@ class Room {
             }
             rooms[roomIndex].status = Status.Lobby;
             resolve(rooms[roomIndex]);
+        });
+    }
+
+    createRoomIfNotExist = (rooms, name, password, mode) => {
+        return new Promise((resolve, reject) => {
+            let room = rooms.find(obj => obj.name === name);
+
+            if (!room) {
+                let newRoom = {
+                    id: uuidv4(),
+                    name: name,
+                    password: password,
+                    private: (password !== ''),
+                    players: [],
+                    mode: mode,
+                    pieces: [i, j, k, l, m, n, o],
+                    status: Status.Lobby,
+                    countWaiting: 0,
+                    chat: [],
+                };
+                rooms.push(newRoom);
+                resolve(newRoom);
+            } else if (room.password === password) {
+                if (room.status === Status.Lobby) {
+                    console.log('resolving OK join');
+                    resolve(room);
+                } else {
+                    reject();
+                }
+            } else {
+                resolve(false);
+            }
         });
     }
 }
