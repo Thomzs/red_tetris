@@ -2,18 +2,11 @@ import {createSlice} from "@reduxjs/toolkit";
 import {makeArray} from "../utils/piece";
 const { uniqueNamesGenerator, adjectives, names } = require('unique-names-generator');
 
-function bzeroMap() {
-    let rows = 20;
-    let columns = 10;
-
-    return new Array(rows).fill(0).map(() => new Array(columns).fill(0));
-}
-
-function makeAvatar(username) { //TODO randomize colors a bit more
+export function makeAvatar(username) {
     return 'https://source.boringavatars.com/marble/120/' + username + '?colors=264653,2a9d8f,e9c46a,f4a261,e76f51';
 }
 
-function makeUsername() {
+export function makeUsername() {
     let username;
 
     do {
@@ -24,17 +17,19 @@ function makeUsername() {
 
 const username = makeUsername();
 
-const playerSlice = createSlice( {
+export const initialState = {
+    _id: null,
+    _username: username,
+    _avatar: makeAvatar(username),
+    _role: 0,
+    _score: 0,
+    _map: makeArray(10, 20, 0),
+    _error: null,
+};
+
+export const playerSlice = createSlice( {
     name: "player",
-    initialState: {
-        _id: null,
-        _username: username,
-        _avatar: makeAvatar(username),
-        _role: 0,
-        _score: 0,
-        _map: makeArray(10, 20, 0),
-        _error: null,
-    },
+    initialState: initialState,
     reducers: {
         setUsername: (state, action) => {
             state._username = action.payload;

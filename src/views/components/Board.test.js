@@ -58,30 +58,6 @@ describe('board tests', () => {
 
         const reducer = [statusReducer, playerReducer, roomReducer];
         const _store = store;
-        //const component = renderer.create();
-
-
-       // expect(component.root.findByProps({className: "menu-login"}).children.length).toEqual(2);
-
-        // act(() => {
-        //     render(
-        //         <Provider store={store}>
-        //             <Board />
-        //         </Provider>,
-        //         container
-        //     )
-        // });
-            /*<Provider store={store}>
-                <Board />
-            </Provider>*/
-        // expect(container.querySelectorAll('div[id^=row]').length).toEqual(10);
-        // expect(container.querySelectorAll('div[id^=col]').length).toEqual(100);
-        //const _board = TestRenderer.create(<Board/>);
-        //const testInstance = _board.root;
-
-        //expect(testInstance.findByType(<section/>)).toBe(<section/>);
-        //const wrapper = shallow(<Board />);
-        //expect(1).toBe(1);
     });
 
 })
