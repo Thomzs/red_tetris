@@ -1,11 +1,14 @@
 import {createSlice} from "@reduxjs/toolkit";
 
-const statusSlice = createSlice({
+export const initialState = {
+    _status: 'INTRO',
+    _gameStatus: 'initial'
+};
+
+
+export const statusSlice = createSlice({
     name: 'status',
-    initialState: {
-        _status: 'INTRO',
-        _gameStatus: 'initial',
-    },
+    initialState: initialState,
     reducers: {
         setStatusHome: (state) => {
             state._status = 'HOME';

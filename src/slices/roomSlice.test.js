@@ -1,9 +1,26 @@
 import React from "react";
 import reducer, {
-    initialState, roomSlice, setRoom, setLevel, setMalus,
-    setAdmin, setPiece, setScore, setWin, setPlayers, reset,
-    setCountRemoved, setLevelAndCountRemoved, addToChat, sendChat, addPlayer, removePlayer, playerLost, resetGame
+    initialState,
+    roomSlice,
+    setRoom,
+    setLevel,
+    setMalus,
+    setAdmin,
+    setPiece,
+    setScore,
+    setWin,
+    setPlayers,
+    reset,
+    setCountRemoved,
+    setLevelAndCountRemoved,
+    addToChat,
+    sendChat,
+    addPlayer,
+    playerLost,
+    resetGame,
+    gameWillStart, backToLobby, gameHasStarted
 } from "./roomSlice";
+import { Status } from "../utils/status";
 
 describe('roomSlice tests', () => {
     test('setRoom test', () => {
@@ -19,6 +36,7 @@ describe('roomSlice tests', () => {
             _name: "testRoom",
             _password: "testPassword",
             _players: [],
+            _status: 3,
             _chat: [],
             _admin: false,
             _currentPiece: null,
@@ -68,6 +86,7 @@ describe('roomSlice tests', () => {
             _mode: 'classic',
             _name: null,
             _password: "",
+            _status: 3,
             _players: [{"player": "testPlayer"}],
             _score: 0,
             _won: false,
@@ -160,6 +179,7 @@ describe('roomSlice tests', () => {
             _currentPiece: null,
             _won: false,
             _countLost: 0,
+            _status: 3,
             _malus: 0,
             _countRemoved: 0,
             _level: 0,
@@ -185,5 +205,26 @@ describe('roomSlice tests', () => {
        let copy = {...initialState};
        it._score = 100;
        expect(reducer(it, reset())).toEqual(copy);
+    });
+
+    test('gameWillStart', () => {
+       let it = {...initialState};
+       let copy = {...initialState};
+       copy._status = Status.willStart;
+       expect(reducer(it, gameWillStart())).toEqual(copy);
+    });
+
+    test('gameHasStarted', () => {
+       let it = {...initialState};
+       let copy = {...initialState};
+       copy._status = Status.InGame;
+       expect(reducer(it, gameHasStarted())).toEqual(copy);
+    });
+
+    test('backToLobby', () => {
+        let it = {...initialState};
+        let copy = {...initialState};
+        copy._status = Status.Lobby;
+        expect(reducer(it, backToLobby())).toEqual(copy);
     });
 })
