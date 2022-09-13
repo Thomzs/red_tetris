@@ -17,7 +17,7 @@ export const initialState = {
     _level: 0,
 }
 
-const roomSlice = createSlice({
+export const roomSlice = createSlice({
     name: 'room',
     initialState: initialState,
     reducers: {
@@ -42,9 +42,6 @@ const roomSlice = createSlice({
         },
         setPlayers: (state, action) => {
             state._players = action.payload;
-        },
-        removePlayer: (state, action) => {
-            state._players.filter((p) => p.id !== action.payload);
         },
         setPiece: (state, action) => {
             state._currentPiece = action.payload;
@@ -97,7 +94,6 @@ export const {
     setScore,
     setWin,
     setMalus,
-    removePlayer,
     sendChat,
     playerLost,
     setCountRemoved,
