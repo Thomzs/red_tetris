@@ -11,7 +11,6 @@ import {checkRoomPassword, getRooms, requestCreateRoom} from "../utils/api";
 import {ArrowClockwise} from 'react-bootstrap-icons'
 import {useForm} from "react-hook-form";
 import {Status} from "../utils/status";
-import useDidMountEffect from "../utils/useDidMountEffect";
 
 //TODO if not connected go connect
 
