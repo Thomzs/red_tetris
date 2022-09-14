@@ -35,7 +35,6 @@ const SmallBoard = (props) => {
 
 const BoardList = () => {
     const {room: {_players}, player: {_id}} = useSelector((state) => state);
-    console.log("myID: ", _id, "| players: ", _players);
 
     return (
         <section className="h-100 w-100 overflow-scroll position-relative" data-mdb-perfect-scrollbar="true">

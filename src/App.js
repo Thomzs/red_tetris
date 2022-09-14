@@ -53,7 +53,6 @@ function App() {
             player = player[0].substring(1);
             if (!password) password = "";
             else password = password[0].substring(10);
-            console.log('Requesting name+password:', room, password);
             dispatch(setUsername(player));
             directRoomRequest(room, password)
                 .then((_ret) => {

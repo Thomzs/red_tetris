@@ -1,6 +1,4 @@
-import fetch from "node-fetch";
-
-const getRooms = async () => {
+export const getRooms = async () => {
     const response = await fetch('http://localhost:8080/rooms');
     const body = await response.json();
 
@@ -10,7 +8,7 @@ const getRooms = async () => {
     return body;
 }
 
-const checkRoomPassword = async (roomId, password) => {
+export const checkRoomPassword = async (roomId, password) => {
     const response = await fetch('http://localhost:8080/askRoom?' + new URLSearchParams({
         room: roomId,
         password: password,
@@ -23,7 +21,7 @@ const checkRoomPassword = async (roomId, password) => {
     return body;
 };
 
-const requestCreateRoom = async (name, mode, password) => {
+export const requestCreateRoom = async (name, mode, password) => {
     const response = await fetch('http://localhost:8080/createRoom?' + new URLSearchParams({
         name: name,
         mode: mode,
@@ -37,7 +35,7 @@ const requestCreateRoom = async (name, mode, password) => {
     return body;
 };
 
-const directRoomRequest = async (room, password) => {
+export const directRoomRequest = async (room, password) => {
     const response = await fetch('http://localhost:8080/directRequest?' + new URLSearchParams({
         room: room,
         password: password,
@@ -49,10 +47,3 @@ const directRoomRequest = async (room, password) => {
     }
     return body;
 }
-
-module.exports = {
-    getRooms,
-    checkRoomPassword,
-    requestCreateRoom,
-    directRoomRequest,
-};

@@ -81,7 +81,6 @@ export const socketMiddleware = (store) => {
             });
 
             socket.on('malus', (data) => {
-                console.log("receiving : ", data);
                 store.dispatch(setMalus(data));
             });
 

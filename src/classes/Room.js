@@ -87,6 +87,9 @@ class Room {
                         } else if (rooms[i].countWaiting > 0) {
                             rooms[i].countWaiting--;
                         }
+                        if (rooms[i].players[j].lost) {
+                            rooms[i].lost--;
+                        }
                         resolve(rooms[i]);
                         return;
                     }
@@ -121,6 +124,10 @@ class Room {
             let roomIndex = rooms.findIndex((room) => room.name === name);
             let playerIndex = rooms[roomIndex].players.findIndex((player) => player.socket.id === id);
 
+            if (rooms[roomIndex].countWaiting > 0) {
+                rooms[roomIndex].countWaiting--;
+                rooms[roomIndex].lost++;
+            }
             rooms[roomIndex].players[playerIndex].lost = true;
             resolve(rooms[roomIndex].players);
         });
@@ -181,7 +188,6 @@ class Room {
                 resolve(newRoom);
             } else if (room.password === password) {
                 if (room.status === Status.Lobby) {
-                    console.log('resolving OK join');
                     resolve(room);
                 } else {
                     reject();

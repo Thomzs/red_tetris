@@ -41,10 +41,10 @@ io.on("connection", async(socket) => {
     const sendPiece = (_room, piece) => {
         if (_room.status !== Status.InGame) {//Game has just started
             _room.status = Status.InGame;
-            _room.lost = _room.players.length;
+            _room.lost = 0;
         }
         io.to(_room.name).emit('newPiece', piece);
-        _room.countWaiting = _room.players.length;
+        _room.countWaiting = _room.players.length - _room.lost;
     }
 
     //On disconnect, remove player from the room he was in.
@@ -65,7 +65,6 @@ io.on("connection", async(socket) => {
                         players[newAdmin].admin = true;
                         players[newAdmin].socket.emit('admin');
                     }
-
                     if (_room.players.length === 1 && _room.status === Status.InGame) {
                         _room.players[0].socket.emit('winner');
                     } else if (_room.countWaiting === 0 && _room.status === Status.InGame) {
@@ -119,10 +118,8 @@ io.on("connection", async(socket) => {
                         })
                         .catch((r) => console.log(r));
                 }
-                console.log('removedLines: ', data.removedLines);
                 if (data.removedLines && data.removedLines > 1) {
                     let toAdd = data.removedLines <= 4 ? data.removedLines - 1 : 3;
-                    console.log('sending malus: ', toAdd);
                     socket.to(_room.name).emit('malus', toAdd);
                 }
             })
@@ -132,6 +129,7 @@ io.on("connection", async(socket) => {
     //A player has lost. Keep tracks of it, share the update in the room.
     //Then, if the is only one player left in the room that did not lose, tell him he's the winner
     socket.on('loose', (data) => {
+        let index = rooms.findIndex((room) => room.name === data.room);
         _Room.setLoose(rooms, data.room, socket.id)
             .then((players) => {
                 let tmp = Object.assign(players);
@@ -140,7 +138,16 @@ io.on("connection", async(socket) => {
                     .then((winner) => {
                         winner.socket.emit('winner');
                     })
-                    .catch(r => console.log(r));
+                    .catch(() => {
+                        let index = rooms.findIndex((room) => room.name === data.room);
+                        if (rooms[index].countWaiting === 0 && rooms[index].status === Status.InGame) {
+                            _Piece.getPiece(rooms, data.name)
+                                .then((piece) => {
+                                    sendPiece(rooms[index], piece);
+                                })
+                                .catch((r) => console.log(r));
+                        }
+                    });
             });
     });
 

@@ -2,7 +2,6 @@
   "name": "redtetris",
   "version": "0.1.0",
   "private": true,
-  "type": "commonjs",
   "dependencies": {
     "@bit/formidablelabs.react-animations.tada": "^1.0.0",
     "@reduxjs/toolkit": "^1.8.3",
