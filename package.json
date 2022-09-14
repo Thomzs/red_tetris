@@ -40,7 +40,7 @@
   },
   "scripts": {
     "client": "npm run start --prefix client",
-    "server": "node index.js",
+    "server": "node src/server.js",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "start": "react-scripts start",
     "build": "react-scripts build",

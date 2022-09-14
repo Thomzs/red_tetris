@@ -2,16 +2,16 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const {Server} = require("socket.io");
-const {Status} = require("./src/utils/status");
+const {Status} = require("./utils/status");
 const { v4: uuidv4 } = require('uuid');
-const Room = require("./src/classes/Room");
-const Player = require("./src/classes/Player");
-const Piece = require("./src/classes/Piece");
-const removeKeys = require("./src/utils/removeKeys");
+const Room = require("./classes/Room");
+const Player = require("./classes/Player");
+const Piece = require("./classes/Piece");
+const removeKeys = require("./utils/removeKeys");
 const { createClient } = require("redis");
 const { createAdapter } = require("@socket.io/redis-adapter");
 
-const pubClient = createClient({ url: "redis://localhost:6379" });
+const pubClient = createClient({ url: "redis://redis.internal:6379" });
 const subClient = pubClient.duplicate();
 
 const _Room = new Room();
