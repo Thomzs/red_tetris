@@ -1,4 +1,4 @@
-function removeKeys(obj, keys) {
+export function removeKeys(obj, keys) {
     if (Array.isArray(obj)) return obj.map(item => removeKeys(item, keys));
 
     if (typeof obj === 'object' && obj !== null) {
@@ -9,5 +9,3 @@ function removeKeys(obj, keys) {
 
     return obj;
 }
-
-module.exports = removeKeys;
