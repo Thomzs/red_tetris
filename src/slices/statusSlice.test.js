@@ -1,6 +1,5 @@
 import React from "react";
 import reducer, {initialState, setStatusGame, setGameStatus, setStatusHome} from "./statusSlice";
-import intro from "../views/Intro";
 
 describe('statusSlice tests', () => {
     test('setStatusGame', () => {

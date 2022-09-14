@@ -4,7 +4,6 @@ import {setUsername} from "../../slices/playerSlice";
 import {debounce} from "../../utils/debounce";
 import {setGameStatus, setStatusHome} from "../../slices/statusSlice";
 import {reset} from "../../slices/roomSlice";
-import {setConnected, setDisconnected} from "../../slices/connectionSlice";
 
 const NavBar = () => {
     const { player, }  = useSelector((state) => state);

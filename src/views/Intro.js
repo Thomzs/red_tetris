@@ -1,10 +1,7 @@
-import {useDispatch, useSelector} from "react-redux";
-import {useEffect} from "react";
-import {setStatusHome} from "../slices/statusSlice";
+import {useSelector} from "react-redux";
 
 const Intro = () => {
     const { player }  = useSelector((state) => state);
-    const dispatch = useDispatch();
 
     return (
         <section className="intro">

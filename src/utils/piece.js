@@ -10,35 +10,29 @@ export function makeArray(w, h, val) {
         }
     }
     return arr;
-};
+}
 
-let playing = false;
-let pieces = []; // List of generated pieces
-let dx, dy  = 20; // Pixel size of a single tetris block
-let actions = []; // List of actions taken by the user
-let nextPiece; // Next piece to be generated
-let timer; // Game timer since start of the game
+
 let score = 0;
 let rows = 0; // Number of cleaned row
-let cumulativeCleanedRows = 0; // If multiple rows cleaned at onces, allows score calculation
 let nextStep; // How long before current piece drops by 1 row
 
 export function addScore(n) {
     score = score + n;
-};
+}
 
 export function setRows(n) {
     rows = n; nextStep = Math.max(speed.min, speed.start - (speed.decrement * rows));
-};
+}
 
 export function getBlock(blocks, x, y) {
     return (blocks && blocks[y] ? blocks[y][x] : null);
-};
+}
 
 export function setBlock(blocks,y,x,type) {
     blocks[x] = blocks[x] || []; blocks[x][y] = type;
     return blocks;
-};
+}
 
 export function move(blocks, currPiece, dir) {
     let x = currPiece.x, y = currPiece.y;
@@ -56,7 +50,7 @@ export function move(blocks, currPiece, dir) {
     else {
         return false;
     }
-};
+}
 
 
 // TODO better implementation, this is only temporary
@@ -116,13 +110,13 @@ export function removeLines(blocks) {
         blocks.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
     }
     return {board:blocks, removedLines:removedLines};
-};
+}
 
 export function dropPiece(blocks, currPiece) {
     return eachBlock(blocks, currPiece.type, currPiece.x, currPiece.y, currPiece.dir, function(blocks, x, y) {
         setBlock(blocks, x, y, currPiece.type);
     });
-};
+}
 
 export function rotate(blocks, currPiece) {
     let tmp = {...currPiece};
@@ -132,7 +126,7 @@ export function rotate(blocks, currPiece) {
        // invalidate();
     }
     return tmp;
-};
+}
 
 // Helped function that iterates over all the cells in the tetris grid that the piece will occupy
 export function eachBlock(blocks, type, x, y, dir, fn) {
@@ -147,18 +141,7 @@ export function eachBlock(blocks, type, x, y, dir, fn) {
         }
     }
     return blocks;
-};
-
-// Selects random piece available pieces pool, duplicates inside pool to avoid not getting any piece
-// function randomPiece() {
-//     if (pieces.length === 0)
-//         pieces = [i, i ,i , i, j, j, j, j, k, k, k, k, l, l, l, l, m, m, m, m, n, n, n, n, o, o, o, o];
-//     // Not sure about the random piece selection below, may need to rework this line
-//     //var type = pieces.splice(Math.random(0, pieces.length-1), 1)[0]; // remove a single piece
-//
-//     let type = pieces.splice(Math.floor(Math.random() * pieces.length - 1), 1)[0]; // remove a single piece
-//     return { type: type, dir: DIR.UP, x: 2, y: 0 };
-// };
+}
 
 // Checks if any of the required blocks to place the next piece are occupied or not
 export function occupied(blocks, type, x, y, dir) {
@@ -168,12 +151,9 @@ export function occupied(blocks, type, x, y, dir) {
             result = true;
     });
     return (result);
-};
+}
 
 // Same as occupied but the other way around
 export function unoccupied(blocks, type, x, y, dir) {
     return !occupied(blocks, type, x, y, dir);
-};
-
-//module.exports = {occupied, unoccupied, checkSingleLine, removeLines, dropPiece, eachBlock, makeArray, move, loose,
-                    //getBlock, addScore};
+}

@@ -1,17 +1,15 @@
 import { io, Socket } from "socket.io-client";
 import {setConnected, setDisconnected, startConnecting} from "../slices/connectionSlice";
 import {setId, setUsername} from "../slices/playerSlice";
-import {requestStart, setGameStatus, setStatusGame, setStatusHome} from "../slices/statusSlice";
+import {requestStart, setGameStatus, setStatusHome} from "../slices/statusSlice";
 import {
     addPlayer,
     setAdmin,
     setPiece,
     setPlayers,
     setRoom,
-    playerLost,
     resetGame,
-    reset,
-    setWin, addToChat, sendChat, setMalus, gameHasStarted, gameWillStart, backToLobby
+    setWin, addToChat, sendChat, setMalus, gameWillStart, backToLobby
 } from "../slices/roomSlice";
 
 export const socketMiddleware = (store) => {

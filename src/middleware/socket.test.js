@@ -5,18 +5,6 @@
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 const Client = require("socket.io-client");
-const {socketMiddleware} = require("./socket");
-
-const create = () => {
-    const store = {
-        getState: jest.fn(() => ({})),
-        dispatch: jest.fn()
-    }
-    const next = jest.fn()
-
-    const invoke = action => socketMiddleware(store)(next)(action)
-
-    return { store, next, invoke }}
 
 describe("my awesome project", () => {
     let io, serverSocket, clientSocket;

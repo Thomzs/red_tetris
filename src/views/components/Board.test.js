@@ -2,50 +2,63 @@
  * @jest-environment jsdom
  */
 
-import { computeRemovedLinesScore, getInterval } from "./Board";
-import React from 'react';
-import playerReducer, {initialState} from "../../slices/playerSlice";
-import roomReducer from "../../slices/roomSlice";
-import statusReducer from "../../slices/statusSlice";
-const { store } = require('../../store/store');
-import { act } from "react-dom/test-utils";
-import { Provider } from "react-redux";
-import {unmountComponentAtNode} from "react-dom";
+import {Board, computeRemovedLinesScore, getInterval} from "./Board";
+import {initialState} from "../../slices/playerSlice";
 
-import renderer from "react-test-renderer";
-import Board from "./Board";
 import configureStore from "redux-mock-store";
-import { render, screen } from "@testing-library/react";
 import {Status} from "../../utils/status";
+import {DIR} from "../../classes/Piece_utils";
+import {i} from "../../classes/Piece_utils";
+import { render, screen } from "@testing-library/react";
+import {v4} from "uuid";
+import {Provider} from "react-redux";
 const mockStore = configureStore();
 
-let container = null;
 
 describe('board tests', () => {
-    mockStore({
-        connection: {
-            _connected: true,
-            _connecting: true,
-        },
-        player: initialState,
-        room: {
-            _id: null,
-            _admin: false,
-            _chat: [],
-            _players: [],
-            _mode: 'classic',
-            _name: 'test',
-            _password: '',
-            _currentPiece: {type},
-            _score: 0,
-            _won: false,
-            _countLost: 0,
-            _malus: 0,
-            _countRemoved: 0,
-            _level: 0,
-            _status: Status.Lobby,
-        }
-    });
+   test('initTest', () => {
+       let it = initialState;
+       let it2 = initialState;
+       let store = mockStore({
+           connection: {
+               _connected: true,
+               _connecting: true,
+           },
+           status: {
+               _status: 'INTRO',
+               _gameStatus: 'initial',
+           },
+           player: it,
+           room: {
+               _id: v4(),
+               _admin: false,
+               _chat: [],
+               _players: [it, it2],
+               _mode: 'classic',
+               _name: 'test',
+               _password: '',
+               _currentPiece: {type: i, dir: DIR.UP, x: 2, y: 0},
+               _score: 0,
+               _won: true,
+               _countLost: 0,
+               _malus: 0,
+               _countRemoved: 0,
+               _level: 0,
+               _status: Status.Lobby,
+           }
+       });
+
+       let result = render(
+           <Provider store={store}>
+               <Board />
+           </Provider>
+       );
+
+       expect(result.container.querySelectorAll('div[id^=row]').length).toEqual(20);
+
+       // let elem = screen.getByText('rotate');
+       // expect(elem).toBeInTheDocument();
+   });
 
     test('computeRemovedLinesScore', () => {
         expect(computeRemovedLinesScore(1)).toBe(40);

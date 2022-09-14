@@ -1,7 +1,6 @@
 const {v4: uuidv4} = require("uuid");
 const {Status} = require("../utils/status");
 const removeKeys = require("../utils/removeKeys");
-//import {removeKeys} from "../utils/removeKeys";
 const {i, j, k, l, m, n, o} = require('./Piece_utils');
 
 class Room {

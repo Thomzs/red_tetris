@@ -1,11 +1,8 @@
 import {useDispatch, useSelector} from "react-redux";
-import {useEffect, useState} from "react";
-import {requestPiece} from "../utils/api";
+import {useState} from "react";
 import Chat from "./components/Chat";
-import {Container} from "react-bootstrap";
-import Board from "./components/Board";
-import {requestStart, setGameStatus, setStatusGame} from "../slices/statusSlice";
-import {resetGame} from "../slices/roomSlice";
+import {Board} from "./components/Board";
+import {requestStart} from "../slices/statusSlice";
 import BoardList from "./components/BoardList";
 import {Allotment} from "allotment";
 import "allotment/dist/style.css";
@@ -15,7 +12,7 @@ import {Status} from "../utils/status";
 //TODO if not connected go connect
 
 const Game = () => {
-    const { room, status, player} = useSelector((state) => state); //useless for now
+    const { room, player} = useSelector((state) => state); //useless for now
 
     const dispatch = useDispatch(); //react stuff
 
@@ -70,13 +67,6 @@ const Game = () => {
                                     <Chat />
                                 </Allotment.Pane>
                             </Allotment>
-
-                        {/*<Container fluid className="w-100 h-50 p-0">*/}
-                        {/*    <BoardList />*/}
-                        {/*</Container>*/}
-                        {/*<Container fluid className="w-100 h-50 p-0 border-top border-dark">*/}
-                        {/*    <Chat />*/}
-                        {/*</Container>*/}
                     </div>
                 </div>
             </div>

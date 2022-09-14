@@ -3,7 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 class Player {
 
     newPlayer = (players, socket) => {
-        return new Promise(((resolve, reject) => {
+        return new Promise(((resolve) => {
             let newPlayer = {
                 socket: socket,
                 _id: null,

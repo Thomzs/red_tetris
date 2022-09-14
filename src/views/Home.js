@@ -1,8 +1,7 @@
-import {useDispatch, useSelector} from "react-redux";
-import {setStatusGame} from "../slices/statusSlice";
+import {useDispatch} from "react-redux";
 
 import Modal from 'react-bootstrap/Modal';
-import {createRef, useEffect, useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {Form} from "react-bootstrap";
 import styled, { keyframes } from "styled-components";
 import Tada from "@bit/formidablelabs.react-animations.tada";
