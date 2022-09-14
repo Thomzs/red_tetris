@@ -4,7 +4,6 @@ const getRooms = async () => {
     const response = await fetch('http://localhost:8080/rooms');
     const body = await response.json();
 
-    console.log(body);
     if (response.status !== 200) {
         throw Error(body.message)
     }
@@ -18,7 +17,6 @@ const checkRoomPassword = async (roomId, password) => {
     }));
     const body = await response.json();
 
-    console.log(body);
     if (response.status !== 200) {
         throw Error(body.message)
     }
@@ -33,7 +31,6 @@ const requestCreateRoom = async (name, mode, password) => {
     }));
     const body = await response.json();
 
-    console.log(body);
     if (response.status !== 200) {
         throw Error(body.message)
     }
@@ -47,7 +44,6 @@ const directRoomRequest = async (room, password) => {
     }));
     const body = await response.json();
 
-    console.log(body);
     if (response.status !== 200) {
         throw Error(body.message);
     }
