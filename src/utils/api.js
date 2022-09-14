@@ -5,10 +5,10 @@ const getRooms = async () => {
     const body = await response.json();
 
     if (response.status !== 200) {
-        throw Error(body.message)
+        throw new Error(body.message)
     }
     return body;
-};
+}
 
 const checkRoomPassword = async (roomId, password) => {
     const response = await fetch('http://localhost:8080/askRoom?' + new URLSearchParams({

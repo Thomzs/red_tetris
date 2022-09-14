@@ -4,7 +4,6 @@ const { gamePieces } = require("./Piece_utils.js");
 const {DIR} = require("./Piece_utils");
 const {i, j, k, l, m, n, o} = require('./Piece_utils');
 
-
 class Piece {
 
     getPiece = (rooms, name) => {
