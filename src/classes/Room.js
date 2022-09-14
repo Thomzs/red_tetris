@@ -1,6 +1,7 @@
 const {v4: uuidv4} = require("uuid");
 const {Status} = require("../utils/status");
 const removeKeys = require("../utils/removeKeys");
+//import {removeKeys} from "../utils/removeKeys";
 const {i, j, k, l, m, n, o} = require('./Piece_utils');
 
 class Room {
@@ -43,15 +44,6 @@ class Room {
         });
     }
 
-    getRoom = (rooms, id, password) => {
-        return new Promise((resolve, reject) => {
-            let room = rooms.find(obj => obj.id === id && obj.password === password);
-
-            if (room) resolve(room);
-            else reject();
-        });
-    }
-
     checkRoomPassword = (rooms, id, password) => {
         return new Promise((resolve, reject) => {
             let room = rooms.find(obj => obj.id === id);
@@ -68,32 +60,6 @@ class Room {
                 resolve(false);
             }
         })
-    }
-
-    checkRoomPasswordByName = (rooms, name, password) => {
-        return new Promise((resolve, reject) => {
-            let room = rooms.find(obj => obj.name === name);
-
-            if (!room) {
-                console.log('steuplait');
-                reject();
-                return;
-            } else if (room.password === password) {
-                if (room.status === Status.Lobby) {
-                    resolve(room);
-                    console.log('arrete');
-                    return;
-                } else {
-                    console.log('tes putains');
-                    reject();
-                    return;
-                }
-            } else {
-                console.log('de conneries');
-                resolve(false);
-                return;
-            }
-        });
     }
 
     joinRoom = (rooms, name, player) => {
@@ -187,8 +153,8 @@ class Room {
         return new Promise((resolve) => {
             let roomIndex = rooms.findIndex((room) => room.name === name);
 
-            for (let i = 0; i < rooms[roomIndex].players; i++) {
-                rooms[roomIndex].players[i] = false;
+            for (let i = 0; i < rooms[roomIndex].players.length; i++) {
+                rooms[roomIndex].players[i].lost = false;
             }
             rooms[roomIndex].status = Status.Lobby;
             resolve(rooms[roomIndex]);

@@ -1,4 +1,4 @@
-import { removeKeys } from "./removeKeys";
+import removeKeys from "./removeKeys";
 
 describe('removeKeys test', () => {
    test('removeKeys basic test', () => {
