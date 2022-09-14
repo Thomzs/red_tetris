@@ -12,7 +12,7 @@ import Modal from 'react-bootstrap/Modal';
 //rotate, move left, move right update the piece, not the board.
 //drop updates the piece if it can go down. Otherwise, it calls dropPiece to update the board.
 
-function getInterval(level) {
+export function getInterval(level) {
     const rate = 16.74;
 
     switch (level) {
