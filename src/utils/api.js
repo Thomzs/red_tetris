@@ -1,3 +1,5 @@
+import fetch from "node-fetch";
+
 const getRooms = async () => {
     const response = await fetch('http://localhost:8080/rooms');
     const body = await response.json();
@@ -52,7 +54,7 @@ const directRoomRequest = async (room, password) => {
     return body;
 }
 
-export {
+module.exports = {
     getRooms,
     checkRoomPassword,
     requestCreateRoom,
