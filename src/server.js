@@ -2,16 +2,16 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const {Server} = require("socket.io");
-const {Status} = require("./src/utils/status");
+const {Status} = require("./utils/status");
 const { v4: uuidv4 } = require('uuid');
-const Room = require("./src/classes/Room");
-const Player = require("./src/classes/Player");
-const Piece = require("./src/classes/Piece");
-const removeKeys = require("./src/utils/removeKeys");
+const Room = require("./classes/Room");
+const Player = require("./classes/Player");
+const Piece = require("./classes/Piece");
+const removeKeys = require("./utils/removeKeys");
 const { createClient } = require("redis");
 const { createAdapter } = require("@socket.io/redis-adapter");
 
-const pubClient = createClient({ url: "redis://localhost:6379" });
+const pubClient = createClient({ url: "redis://redis.internal:6379" });
 const subClient = pubClient.duplicate();
 
 const _Room = new Room();
@@ -66,7 +66,9 @@ io.on("connection", async(socket) => {
                         players[newAdmin].socket.emit('admin');
                     }
 
-                    if (_room.countWaiting === 0 && _room.status === Status.InGame) {
+                    if (_room.players.length === 1 && _room.status === Status.InGame) {
+                        _room.players[0].socket.emit('winner');
+                    } else if (_room.countWaiting === 0 && _room.status === Status.InGame) {
                         _Piece.getPiece(rooms, _room.name)
                             .then((piece) => {
                                 sendPiece(_room, piece);
@@ -197,8 +199,11 @@ app.get('/askRoom', (req, res) => {
     let password = req.query.password;
 
     _Room.checkRoomPassword(rooms, roomId, password)
-        .then(r => res.send(r))
-        .catch(() => res.send(JSON.stringify({ message: 'Either this room does not exist, or you can\'t join it.'})));
+        .then((r) => {
+            let tmp = r ? Object.assign(r) : false;
+            res.send(r ? removeKeys(tmp, 'socket') : false);
+        })
+        .catch(() => res.send(JSON.stringify({message: 'Either this room does not exist, or you can\'t join it.'})));
 })
 
 app.get('/createRoom', (req, res) => {
@@ -216,16 +221,12 @@ app.get('/directRequest', (req, res) => {
    let password = req.query.password;
    let mode = 'classic';
 
-   //TODO one function.
-   console.log('Requesting name+password:', name, password);
    _Room.createRoomIfNotExist(rooms, name, password, mode)
        .then((r) => {
-           console.log('OK JOIN1', r);
            let tmp = r ? Object.assign(r) : false;
            res.send(r ? removeKeys(tmp, 'socket') : false);
-           console.log('OK JOIN2');
        })
-       .catch(() => {res.send(JSON.stringify({ message: 'It seems you can\'t join this room.'})); console.log('NOT OK');});
+       .catch(() => {res.send(JSON.stringify({message: 'It seems you can\'t join this room.'})); console.log('NOT OK');});
 });
 
 io.listen(3001);

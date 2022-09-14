@@ -5,9 +5,8 @@ import {setGameStatus} from "../../slices/statusSlice";
 import {DIR, KEY} from "../../classes/Piece_utils";
 import {useInterval} from "../../utils/useInterval";
 import {setCountRemoved, setLevelAndCountRemoved, setScore} from "../../slices/roomSlice";
-import React from 'react';
-import Chat from "./Chat";
 import {Status} from "../../utils/status";
+import Modal from 'react-bootstrap/Modal';
 
 //Render the board, and the piece above the board.
 //rotate, move left, move right update the piece, not the board.
@@ -90,6 +89,9 @@ export const Board = () => {
     const [piece, setPiece] = useState(null);
     const [board, setBoard] = useState(makeArray(10, 20, 0));
     const [removed, setRemoved] = useState(0);
+    const [smShow, setSmShow] = useState(false);
+    const [title, setTitle] = useState("Game Over");
+    const [text, setText] = useState("You lost!");
 
     const dispatch = useDispatch();
 
@@ -188,14 +190,16 @@ export const Board = () => {
     const lose = () => {
         dispatch(setGameStatus({gameStatus: 'loose', board: board}));
         setPiece(null);
-        alert('LOSE');
+        setText('You lost!');
+        setTitle('Game Over');
+        setSmShow(true);
     }
 
     useEffect(() => {
         if (room._status === Status.willStart) {
             setBoard(makeArray(10, 20, 0));
             setPiece(null);
-            //getReadyMessage
+            setSmShow(false);
         }
     }, [room._status]);
 
@@ -238,8 +242,9 @@ export const Board = () => {
 
     useEffect(() => {
         if (room._win) {
-            alert('You won');
-            setPiece(null);
+            setText('You won!');
+            setTitle('Congratulations');
+            setSmShow(true);
         }
     }, [room._win]);
 
@@ -304,6 +309,20 @@ export const Board = () => {
                 </div>
                 </div>
             </div>
+
+            <Modal
+                size="sm"
+                show={smShow}
+                onHide={() => setSmShow(false)}
+                aria-labelledby="example-modal-sizes-title-sm"
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title id="example-modal-sizes-title-sm">
+                        {title}
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>{text}</Modal.Body>
+            </Modal>
         </section>
     );
 }
