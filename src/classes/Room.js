@@ -58,8 +58,12 @@ class Room {
 
             if (!room) {
                 reject();
-            } else if (room.password === password && room.status === Status.Lobby) {
-                resolve(room);
+            } else if (room.password === password) {
+                if (room.status === Status.Lobby) {
+                    resolve(room);
+                } else {
+                    reject();
+                }
             } else {
                 resolve(false);
             }

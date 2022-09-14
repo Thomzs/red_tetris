@@ -151,10 +151,9 @@ const Home = (props) => {
             getUpdateRooms();
             return false;
         }
-        if (ret === true) {
+        if (ret) {
             handleClosePrompt();
-            initGameConnection(clickedRoom, data.password);
-            //initGameConnection(); //params: room id, password}
+            initGameConnection(ret, data.password);
         } else {
              if (wrongPassword !== '') {
                  showWrongPassword();
@@ -166,10 +165,10 @@ const Home = (props) => {
     };
 
     useEffect(() => {
-        if (initPath === null || initPath === undefined || !initPath.reason) return;
         // eslint-disable-next-line no-restricted-globals
         history.replaceState(null, 'Tetris', "/");
         getUpdateRooms();
+        if (initPath === null || initPath === undefined || !initPath.reason) return;
 
         if (initPath.reason === false) {
             alert('The password is incorrect for this room');
