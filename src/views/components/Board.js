@@ -242,12 +242,12 @@ export const Board = () => {
     }, [room._malus]);
 
     useEffect(() => {
-        if (room._win) {
+        if (room._won) {
             setText('You won!');
             setTitle('Congratulations');
             setSmShow(true);
         }
-    }, [room._win]);
+    }, [room._won]);
 
     useInterval(doDrop, getInterval(room._level));
 

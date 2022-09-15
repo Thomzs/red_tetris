@@ -53,7 +53,7 @@ export const roomSlice = createSlice({
             state._score = action.payload;
         },
         setWin: (state) => {
-            state._win = true;
+            state._won = true;
         },
         setMalus: (state, action) => {
             state._malus = action.payload;
