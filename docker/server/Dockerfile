@@ -9,6 +9,8 @@ COPY yarn.lock ./
 RUN yarn config set "@bit:registry" "https://node.bit.cloud/"
 RUN yarn add react-scripts --silent
 
+RUN mkdir node_modules/.cache && chmod -R 777 node_modules/.cache
+
 COPY . ./
 
 EXPOSE 3001
