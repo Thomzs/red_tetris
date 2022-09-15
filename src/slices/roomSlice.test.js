@@ -123,7 +123,7 @@ describe('roomSlice tests', () => {
        let it = {...initialState};
        let copy = {...initialState};
        let win = true;
-       copy._win = win;
+       copy._won = win;
        expect(reducer(it, setWin(win))).toEqual(copy);
     });
 
