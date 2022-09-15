@@ -100,7 +100,6 @@ export const socketMiddleware = (store) => {
             }
 
             if (setGameStatus.match(action) && action.payload.gameStatus === 'readyNext') {
-                console.log("sending removedLines: ", action.payload.removedLines ?? 0);
                 socket.emit('readyNext', {board: action.payload.board, room: store.getState().room._name, removedLines: action.payload.removedLines ?? 0}); //Tell server we are waiting for a tetrimino
             } else if (setGameStatus.match(action) && action.payload.gameStatus === 'loose') {
                 socket.emit('loose', {room: store.getState().room._name});
