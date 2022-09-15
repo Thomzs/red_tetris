@@ -9,7 +9,7 @@ COPY yarn.lock ./
 RUN yarn config set "@bit:registry" "https://node.bit.cloud/"
 RUN yarn add react-scripts --silent
 
-RUN mkdir node_modules/.cache && chmod -R 777 node_modules/.cache
+RUN mkdir node_modules/.cache && chmod -R node_modules/.cache
 
 # add app
 COPY . ./

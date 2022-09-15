@@ -46,6 +46,7 @@ const NavBar = () => {
                             className="me-2"
                             aria-label="username"
                             onChange={inputHandler}
+                            disabled={true}
                         />
                     </Form>
                     <Button
