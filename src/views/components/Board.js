@@ -4,7 +4,7 @@ import {dropPiece, makeArray, move, rotate, occupied, removeLines, addMalus} fro
 import {setGameStatus} from "../../slices/statusSlice";
 import {DIR, KEY} from "../../classes/Piece_utils";
 import {useInterval} from "../../utils/useInterval";
-import {setCountRemoved, setLevelAndCountRemoved, setScore} from "../../slices/roomSlice";
+import {setCountRemoved, setLevelAndCountRemoved, setMalus, setScore} from "../../slices/roomSlice";
 import {Status} from "../../utils/status";
 import Modal from 'react-bootstrap/Modal';
 
@@ -238,6 +238,7 @@ export const Board = () => {
                 }
             }
         }
+        dispatch(setMalus(0));
     }, [room._malus]);
 
     useEffect(() => {
